@@ -6,7 +6,7 @@ A personal blog and portfolio built with Next.js 16, Sanity, Tailwind CSS v4 and
 
 ## Requirements
 
-- Node.js 24 (`.nvmrc`)
+- Node.js: the version in `.nvmrc`
 - pnpm (via `corepack enable`)
 
 ## Scripts
