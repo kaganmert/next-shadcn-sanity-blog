@@ -62,6 +62,8 @@ Requirements: Node.js (the version in `.nvmrc`) and pnpm (`corepack enable`).
    pnpm seed
    ```
 
+   `pnpm seed` imports into the `production` dataset with `--replace`, so it overwrites documents that have the same IDs.
+
 7. Start the dev server. The site runs on <http://localhost:3000> and the Studio on <http://localhost:3000/studio>.
 
    ```sh
@@ -93,7 +95,7 @@ CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on every p
 | `SANITY_API_READ_TOKEN`         | `.env.local`, Vercel (secret) | Viewer token, server-only; enables draft mode and Visual Editing |
 | `NEXT_PUBLIC_SITE_URL`          | Optional                      | Canonical URL; on Vercel it defaults to the production domain    |
 
-The build never needs the token, so CI only sets the two public values (as repository variables).
+`.env.example` lists the same variables. The build never needs the token, so CI only sets the two public values (as repository variables).
 
 ## Content model
 
@@ -110,8 +112,8 @@ Schemas live in `sanity/schemaTypes`, and GROQ queries live in `sanity/lib/queri
 
 ## Deploying to Vercel
 
-1. Import the repository in Vercel. Node.js 24.x is pinned through `engines` in `package.json`.
-2. Add the environment variables above for Production and Preview. Mark `SANITY_API_READ_TOKEN` as sensitive.
+1. Import the repository in Vercel and set the project's Node.js version to 24.x (`vercel project update <name> --node-version 24.x`). `engines.node` in `package.json` pins it too.
+2. Add the environment variables above for Production, Preview and Development, so `vercel env pull` works locally. Mark `SANITY_API_READ_TOKEN` as sensitive for Production and Preview; sensitive variables can't target Development, so add it there as a normal variable.
 3. Add your Vercel domains to Sanity CORS with credentials, for example `https://your-app.vercel.app` and `https://your-app-*-your-team.vercel.app` for previews.
 4. Optionally, turn on Web Analytics and Speed Insights for the project. The components are already in the site layout.
 
@@ -120,7 +122,7 @@ Schemas live in `sanity/schemaTypes`, and GROQ queries live in `sanity/lib/queri
 1. Create your own Sanity project and follow **Local setup**.
 2. Edit **Settings** in the Studio: site name, description, intro, navigation, social links and tech stack.
 3. Translate or rewrite UI strings in `lib/strings.ts`. Every string that isn't content lives there.
-4. Adjust the accent colour and other tokens in `app/globals.css`.
+4. Change the accent color with `--primary` (light and dark) in `app/globals.css`. shadcn's `--accent` is only a neutral hover surface.
 
 ## License
 
