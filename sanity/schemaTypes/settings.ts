@@ -1,5 +1,6 @@
 import { SettingsIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { linkSchemes } from "./fields";
 
 /** Site-wide identity and navigation. A singleton: see sanity/structure.ts. */
 export const settings = defineType({
@@ -77,7 +78,7 @@ export const settings = defineType({
               title: "URL",
               type: "url",
               validation: (rule) =>
-                rule.required().uri({ scheme: ["http", "https", "mailto"] }),
+                rule.required().uri({ scheme: linkSchemes }),
             }),
           ],
           preview: { select: { title: "label", subtitle: "url" } },

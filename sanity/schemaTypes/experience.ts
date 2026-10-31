@@ -1,6 +1,6 @@
 import { BriefcaseIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageWithAlt } from "./imageWithAlt";
+import { imageWithAlt } from "./fields";
 
 export const experience = defineType({
   name: "experience",

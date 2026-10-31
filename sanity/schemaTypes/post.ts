@@ -1,6 +1,6 @@
 import { FileTextIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageWithAlt } from "./imageWithAlt";
+import { imageWithAlt, slugField } from "./fields";
 
 export const post = defineType({
   name: "post",
@@ -14,13 +14,7 @@ export const post = defineType({
       type: "string",
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      options: { source: "title", maxLength: 96 },
-      validation: (rule) => rule.required(),
-    }),
+    slugField(),
     defineField({
       name: "excerpt",
       title: "Excerpt",

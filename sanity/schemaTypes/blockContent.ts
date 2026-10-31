@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { altTextField, linkSchemes } from "./fields";
 
 /** Rich text for post bodies: headings, lists, links, images and code. */
 export const blockContent = defineType({
@@ -39,7 +40,7 @@ export const blockContent = defineType({
                 validation: (rule) =>
                   rule.required().uri({
                     allowRelative: true,
-                    scheme: ["http", "https", "mailto"],
+                    scheme: linkSchemes,
                   }),
               }),
             ],
@@ -51,12 +52,7 @@ export const blockContent = defineType({
       type: "image",
       options: { hotspot: true },
       fields: [
-        defineField({
-          name: "alt",
-          title: "Alternative text",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
+        altTextField({ required: "always" }),
         defineField({ name: "caption", title: "Caption", type: "string" }),
       ],
     }),

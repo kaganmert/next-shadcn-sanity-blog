@@ -1,6 +1,6 @@
 import { UserIcon } from "lucide-react";
 import { defineField, defineType } from "sanity";
-import { imageWithAlt } from "./imageWithAlt";
+import { imageWithAlt } from "./fields";
 
 export const author = defineType({
   name: "author",

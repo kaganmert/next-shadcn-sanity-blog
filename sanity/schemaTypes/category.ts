@@ -1,5 +1,6 @@
 import { TagIcon } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { slugField } from "./fields";
 
 export const category = defineType({
   name: "category",
@@ -13,13 +14,7 @@ export const category = defineType({
       type: "string",
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      options: { source: "title", maxLength: 96 },
-      validation: (rule) => rule.required(),
-    }),
+    slugField(),
     defineField({
       name: "description",
       title: "Description",

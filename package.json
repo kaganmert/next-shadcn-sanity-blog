@@ -25,7 +25,6 @@
     "@base-ui/react": "^1.9.0",
     "@sanity/client": "^8.14.1",
     "@sanity/code-input": "^7.3.14",
-    "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.21.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.1",

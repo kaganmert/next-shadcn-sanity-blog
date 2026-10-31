@@ -10,10 +10,8 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
-import { singletonTypes, structure } from "./sanity/structure";
-
-/** Singletons can be edited and published, never duplicated or deleted. */
-const singletonActions = new Set(["publish", "discardChanges", "restore"]);
+import { singletonDocumentActions, singletonTypes } from "./sanity/singletons";
+import { structure } from "./sanity/structure";
 
 export default defineConfig({
   name: "default",
@@ -29,7 +27,7 @@ export default defineConfig({
   document: {
     actions: (actions, { schemaType }) =>
       singletonTypes.has(schemaType)
-        ? actions.filter(({ action }) => action && singletonActions.has(action))
+        ? singletonDocumentActions(actions)
         : actions,
     newDocumentOptions: (options, { creationContext }) =>
       creationContext.type === "global"
