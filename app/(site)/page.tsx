@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PostList } from "@/components/post-list";
 import { routes } from "@/lib/routes";
@@ -7,6 +8,8 @@ import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
 import { latestPostsQuery, settingsQuery } from "@/sanity/lib/queries";
 
 const LATEST_POSTS_LIMIT = 5;
+
+export const metadata: Metadata = { alternates: { canonical: routes.home } };
 
 export default function HomePage() {
   return (

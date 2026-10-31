@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostBody } from "@/components/post-body";
@@ -27,6 +28,30 @@ export async function generateStaticParams() {
     ...publishedFetchOptions,
   });
   return withPlaceholderParam(data);
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/blog/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: post } = await fetchSanity({
+    query: postQuery,
+    params: { slug },
+    ...publishedFetchOptions,
+  });
+  if (!post) return {};
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: routes.post(slug) },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.publishedAt,
+      authors: post.author?.name ? [post.author.name] : undefined,
+    },
+  };
 }
 
 export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {

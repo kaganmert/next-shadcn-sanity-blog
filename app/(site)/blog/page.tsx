@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PostList } from "@/components/post-list";
 import { routes } from "@/lib/routes";
@@ -5,6 +6,11 @@ import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
 import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
 import { categoriesQuery, postsQuery } from "@/sanity/lib/queries";
+
+export const metadata: Metadata = {
+  title: strings.blog.title,
+  alternates: { canonical: routes.blog },
+};
 
 export default function BlogPage() {
   return (

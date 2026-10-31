@@ -6,6 +6,7 @@ export const routes = {
   post: (slug: string) => `/blog/${encodeURIComponent(slug)}`,
   category: (slug: string) => `/blog/category/${encodeURIComponent(slug)}`,
   studio: "/studio",
+  rss: "/rss.xml",
   draftMode: {
     enable: "/api/draft-mode/enable",
     disable: "/api/draft-mode/disable",
