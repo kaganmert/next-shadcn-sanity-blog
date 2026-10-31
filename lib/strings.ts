@@ -22,6 +22,14 @@ export const strings = {
     by: "By",
     linkToSection: "Link to this section",
   },
+  work: {
+    title: "Work",
+    experience: "Experience",
+    techStack: "Tech stack",
+    present: "Present",
+    otherTech: "Other",
+    empty: "No experience added yet.",
+  },
   category: {
     eyebrow: "Category",
     empty: "No posts in this category yet.",

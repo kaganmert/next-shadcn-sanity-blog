@@ -9,6 +9,7 @@ import {
   postSlugsQuery,
   postsQuery,
   settingsQuery,
+  workPageQuery,
 } from "./queries";
 
 describe("settingsQuery", () => {
@@ -179,5 +180,90 @@ describe("postSlugsQuery", () => {
       "designing-for-reading",
       "hello-world",
     ]);
+  });
+});
+
+describe("workPageQuery", () => {
+  it("lists experiences with the current role first, then by start date, newest first", async () => {
+    const work = await runQuery<{ experiences: { company: string }[] }>(
+      workPageQuery,
+    );
+    expect(work.experiences.map((experience) => experience.company)).toEqual([
+      "Acme Corp",
+      "Globex",
+      "Initech",
+    ]);
+  });
+
+  it("puts the current role first even when it started before a past role", async () => {
+    const work = await runQuery<{ experiences: { company: string }[] }>(
+      workPageQuery,
+      {
+        documents: [
+          {
+            _id: "e1",
+            _type: "experience",
+            company: "Later past role",
+            startDate: "2023-01-01",
+            isCurrent: false,
+          },
+          {
+            _id: "e2",
+            _type: "experience",
+            company: "Long-running current role",
+            startDate: "2020-01-01",
+            isCurrent: true,
+          },
+        ],
+      },
+    );
+    expect(work.experiences.map((experience) => experience.company)).toEqual([
+      "Long-running current role",
+      "Later past role",
+    ]);
+  });
+
+  it("treats an experience without the current flag as a past role", async () => {
+    const work = await runQuery<{ experiences: { company: string }[] }>(
+      workPageQuery,
+      {
+        documents: [
+          {
+            _id: "e1",
+            _type: "experience",
+            company: "Imported role",
+            startDate: "2024-01-01",
+          },
+          {
+            _id: "e2",
+            _type: "experience",
+            company: "Current role",
+            startDate: "2022-01-01",
+            isCurrent: true,
+          },
+        ],
+      },
+    );
+    expect(work.experiences.map((experience) => experience.company)).toEqual([
+      "Current role",
+      "Imported role",
+    ]);
+  });
+
+  it("returns the tech stack from settings", async () => {
+    const work = await runQuery<{
+      techStack: { name: string; category: string }[];
+    }>(workPageQuery);
+    expect(work.techStack.slice(0, 2)).toEqual([
+      { name: "TypeScript", category: "Languages" },
+      { name: "GROQ", category: "Languages" },
+    ]);
+  });
+
+  it("returns empty lists when nothing has been added yet", async () => {
+    expect(await runQuery(workPageQuery, { documents: [] })).toEqual({
+      experiences: [],
+      techStack: [],
+    });
   });
 });
