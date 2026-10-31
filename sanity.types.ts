@@ -526,7 +526,7 @@ export type PostSlugsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: workPageQuery
-// Query: {  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": *[_id == "settings"][0].techStack[]{ name, category }}
+// Query: {  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])}
 export type WorkPageQueryResult = {
   experiences: Array<{
     _id: string;
@@ -563,10 +563,12 @@ export type WorkPageQueryResult = {
     endDate: string | null;
     isCurrent: boolean | null;
   }>;
-  techStack: Array<{
-    name: string;
-    category: string | null;
-  }> | null;
+  techStack:
+    | Array<{
+        name: string;
+        category: string | null;
+      }>
+    | Array<never>;
 };
 
 // Query TypeMap
@@ -580,7 +582,7 @@ declare global {
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
     '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
     '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
-    '{\n  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": *[_id == "settings"][0].techStack[]{ name, category }\n}': WorkPageQueryResult;
+    '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

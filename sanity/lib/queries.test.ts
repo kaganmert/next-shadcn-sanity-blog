@@ -223,6 +223,33 @@ describe("workPageQuery", () => {
     ]);
   });
 
+  it("treats an experience without the current flag as a past role", async () => {
+    const work = await runQuery<{ experiences: { company: string }[] }>(
+      workPageQuery,
+      {
+        documents: [
+          {
+            _id: "e1",
+            _type: "experience",
+            company: "Imported role",
+            startDate: "2024-01-01",
+          },
+          {
+            _id: "e2",
+            _type: "experience",
+            company: "Current role",
+            startDate: "2022-01-01",
+            isCurrent: true,
+          },
+        ],
+      },
+    );
+    expect(work.experiences.map((experience) => experience.company)).toEqual([
+      "Current role",
+      "Imported role",
+    ]);
+  });
+
   it("returns the tech stack from settings", async () => {
     const work = await runQuery<{
       techStack: { name: string; category: string }[];
@@ -236,7 +263,7 @@ describe("workPageQuery", () => {
   it("returns empty lists when nothing has been added yet", async () => {
     expect(await runQuery(workPageQuery, { documents: [] })).toEqual({
       experiences: [],
-      techStack: null,
+      techStack: [],
     });
   });
 });

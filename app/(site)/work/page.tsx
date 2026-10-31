@@ -1,6 +1,6 @@
 import { PortableText } from "@portabletext/react";
 import { SanityImage } from "@/components/sanity-image";
-import { formatDateRange } from "@/lib/format-date-range";
+import { formatDateRange } from "@/lib/format-date";
 import { groupTechStack } from "@/lib/group-tech-stack";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";

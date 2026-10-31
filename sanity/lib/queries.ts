@@ -79,7 +79,7 @@ export const postSlugsQuery = defineQuery(
 
 /** The work page: experiences (current role first, then newest start date) and the tech stack. */
 export const workPageQuery = defineQuery(`{
-  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {
+  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {
     _id,
     role,
     company,
@@ -90,5 +90,5 @@ export const workPageQuery = defineQuery(`{
     endDate,
     isCurrent
   },
-  "techStack": *[_id == "settings"][0].techStack[]{ name, category }
+  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])
 }`);

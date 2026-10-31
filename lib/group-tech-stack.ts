@@ -2,7 +2,7 @@ import { strings } from "@/lib/strings";
 
 type TechStackItem = { name: string; category?: string | null };
 
-export type TechStackGroup = { category: string; items: string[] };
+type TechStackGroup = { category: string; items: string[] };
 
 /**
  * Groups the tech stack by category, in the order categories first appear in
