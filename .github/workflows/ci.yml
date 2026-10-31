@@ -10,7 +10,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Only cancel superseded PR runs; every push to master is checked.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   check:
@@ -21,7 +22,7 @@ jobs:
       # Public Sanity identifiers (not secrets), set as repository variables.
       # The build must never depend on secrets such as SANITY_API_READ_TOKEN.
       NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-      NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
+      NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
       NEXT_TELEMETRY_DISABLED: 1
     steps:
       - uses: actions/checkout@v7
@@ -39,6 +40,7 @@ jobs:
 
       - run: pnpm typecheck
 
+      # TODO(NSB-05): switch to `pnpm test` once Vitest adds the script.
       - run: pnpm run --if-present test
 
       - run: pnpm build
