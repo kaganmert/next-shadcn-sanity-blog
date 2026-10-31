@@ -416,10 +416,105 @@ export type SettingsQueryResult =
     }
   | null;
 
+// Source: sanity/lib/queries.ts
+// Variable: postsQuery
+// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }}
+export type PostsQueryResult = Array<{
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  categories: Array<{
+    title: string;
+    slug: string;
+  }> | null;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: latestPostsQuery
+// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }}
+export type LatestPostsQueryResult = Array<{
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  categories: Array<{
+    title: string;
+    slug: string;
+  }> | null;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: categoriesQuery
+// Query: *[_type == "category" && defined(slug.current)] | order(title asc) {  title,  "slug": slug.current,  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])}
+export type CategoriesQueryResult = Array<{
+  title: string;
+  slug: string;
+  postCount: number;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: categoryPageQuery
+// Query: *[_type == "category" && slug.current == $slug][0] {  title,  "slug": slug.current,  description,  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {      _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }  }}
+export type CategoryPageQueryResult = {
+  title: string;
+  slug: string;
+  description: string | null;
+  posts: Array<{
+    _id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    publishedAt: string;
+    coverImage: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    categories: Array<{
+      title: string;
+      slug: string;
+    }> | null;
+  }>;
+} | null;
+
+// Source: sanity/lib/queries.ts
+// Variable: categorySlugsQuery
+// Query: *[_type == "category" && defined(slug.current)] { "slug": slug.current }
+export type CategorySlugsQueryResult = Array<{
+  slug: string;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
     '*[_id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': PostsQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': LatestPostsQueryResult;
+    '*[_type == "category" && defined(slug.current)] | order(title asc) {\n  title,\n  "slug": slug.current,\n  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])\n}': CategoriesQueryResult;
+    '*[_type == "category" && slug.current == $slug][0] {\n  title,\n  "slug": slug.current,\n  description,\n  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n  }\n}': CategoryPageQueryResult;
+    '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

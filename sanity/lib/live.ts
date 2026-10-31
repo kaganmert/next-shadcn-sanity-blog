@@ -30,10 +30,20 @@ export const { sanityFetch, SanityLive } = defineLive({
  * `sanityFetch` tags and sets the cache life internally; this wrapper only
  * creates the boundary, so callers never add their own.
  */
-export const cachedSanity: StrictDefinedFetchType = async (options) => {
+const cachedSanity: StrictDefinedFetchType = async (options) => {
   "use cache";
   return sanityFetch(options);
 };
+
+/**
+ * Fetch from Sanity. Published reads go through the shared cache; draft reads
+ * skip it, because Next.js never stores cached results in draft mode and
+ * re-running a `'use cache'` scope there logs "Unexpected cache miss" errors.
+ */
+export const fetchSanity: StrictDefinedFetchType = async (options) =>
+  options.perspective === "published"
+    ? cachedSanity(options)
+    : sanityFetch(options);
 
 export interface FetchOptions {
   perspective: LivePerspective;

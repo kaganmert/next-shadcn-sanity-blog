@@ -4,13 +4,23 @@
  */
 export const strings = {
   // Fallbacks used until the editor fills in the Sanity `settings` singleton.
-  // TODO(NSB-06): the home intro and NSB-09 metadata read from `settings` too.
   siteName: "next-shadcn-sanity-blog",
   siteDescription:
     "A personal blog and portfolio built with Next.js and Sanity.",
   home: {
-    title: "Hello.",
     intro: "Writing about software, design and the things in between.",
+    latestPosts: "Latest posts",
+    allPosts: "All posts",
+  },
+  blog: {
+    title: "Blog",
+    categories: "Categories",
+    empty: "No posts yet.",
+  },
+  category: {
+    eyebrow: "Category",
+    empty: "No posts in this category yet.",
+    backToBlog: "All posts",
   },
   skipToContent: "Skip to content",
   nav: {
