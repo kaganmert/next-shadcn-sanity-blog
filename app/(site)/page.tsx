@@ -48,7 +48,7 @@ async function Home({ fetchOptions }: { fetchOptions: FetchOptions }) {
             href={routes.blog}
             className="text-primary text-sm hover:underline"
           >
-            {strings.home.allPosts}
+            {strings.allPosts}
           </Link>
         </div>
         <PostList

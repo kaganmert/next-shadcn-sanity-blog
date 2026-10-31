@@ -57,3 +57,22 @@ export const categoryPageQuery =
 export const categorySlugsQuery = defineQuery(
   `*[_type == "category" && defined(slug.current)] { "slug": slug.current }`,
 );
+
+/** Everything the post page renders; null if the slug is unknown. */
+export const postQuery =
+  defineQuery(`*[${isListedPost} && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  publishedAt,
+  coverImage,
+  "author": author->{ name, image },
+  "categories": categories[]->{ title, "slug": slug.current },
+  body
+}`);
+
+/** Route params for every post page. */
+export const postSlugsQuery = defineQuery(
+  `*[${isListedPost}] { "slug": slug.current }`,
+);

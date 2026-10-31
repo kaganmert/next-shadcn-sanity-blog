@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@portabletext/react": "^8.0.1",
     "@sanity/client": "^8.14.1",
     "@sanity/code-input": "^7.3.14",
     "@sanity/image-url": "^2.1.1",
@@ -39,11 +40,13 @@
     "sanity": "^6.21.0",
     "server-only": "^0.0.1",
     "shadcn": "^4.23.0",
+    "shiki": "^4.5.0",
     "styled-components": "^6.6.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
     "@tailwindcss/turbopack": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
