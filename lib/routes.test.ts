@@ -10,6 +10,12 @@ describe("routes", () => {
     expect(routes.category("nextjs")).toBe("/blog/category/nextjs");
   });
 
+  it("builds a draft-mode exit link that returns to the current page", () => {
+    expect(routes.draftMode.exit("/blog/hello-world")).toBe(
+      "/api/draft-mode/disable?redirect=%2Fblog%2Fhello-world",
+    );
+  });
+
   it("encodes slug characters that are not URL-safe", () => {
     expect(routes.post("c# tips")).toBe("/blog/c%23%20tips");
   });

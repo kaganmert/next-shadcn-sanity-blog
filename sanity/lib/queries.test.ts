@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { runQuery } from "@/test/run-query";
 import { settingsQuery } from "./queries";
-import { runQuery } from "./run-query";
 
 describe("settingsQuery", () => {
   it("returns the site identity, navigation and social links from the settings singleton", async () => {

@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import { evaluate, parse } from "groq-js";
 
-/** Test-only: the documents in sanity/seed/data.ndjson. */
-export function loadSeedDocuments(): Record<string, unknown>[] {
+/** The documents in sanity/seed/data.ndjson. */
+function loadSeedDocuments(): Record<string, unknown>[] {
   const ndjson = readFileSync(
-    new URL("../seed/data.ndjson", import.meta.url),
+    new URL("../sanity/seed/data.ndjson", import.meta.url),
     "utf8",
   );
   return ndjson
@@ -13,7 +13,7 @@ export function loadSeedDocuments(): Record<string, unknown>[] {
     .map((line) => JSON.parse(line));
 }
 
-/** Test-only: run a GROQ query in memory against documents, like the Content Lake would. */
+/** Runs a GROQ query in memory against documents (the seed by default), like the Content Lake would. */
 export async function runQuery<T = unknown>(
   query: string,
   {

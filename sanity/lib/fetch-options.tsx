@@ -16,16 +16,14 @@ type RenderWithFetchOptions = (options: FetchOptions) => ReactNode;
  */
 export async function WithFetchOptions({
   children,
-  fallback = null,
 }: {
   children: RenderWithFetchOptions;
-  fallback?: ReactNode;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
   if (!isDraftMode) return children(publishedFetchOptions);
 
   return (
-    <Suspense fallback={fallback}>
+    <Suspense>
       <WithDraftFetchOptions>{children}</WithDraftFetchOptions>
     </Suspense>
   );

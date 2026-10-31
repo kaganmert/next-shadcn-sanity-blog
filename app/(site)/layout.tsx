@@ -27,6 +27,11 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
       <WithFetchOptions>
         {(fetchOptions) => <SiteFooter fetchOptions={fetchOptions} />}
       </WithFetchOptions>
+      {/*
+        With browserToken: false (see sanity/lib/live.ts) published content
+        streams live everywhere; draft changes refresh live inside the
+        Presentation tool only. Outside it, a draft preview needs a reload.
+      */}
       <SanityLive includeDrafts={isDraftMode} />
       {isDraftMode ? (
         <>

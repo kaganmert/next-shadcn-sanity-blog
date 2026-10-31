@@ -9,6 +9,7 @@ import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { routes } from "./lib/routes";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { resolve } from "./sanity/presentation/resolve";
 import { schemaTypes } from "./sanity/schemaTypes";
@@ -18,7 +19,7 @@ import { structure } from "./sanity/structure";
 export default defineConfig({
   name: "default",
   title: "next-shadcn-sanity-blog",
-  basePath: "/studio",
+  basePath: routes.studio,
   projectId,
   dataset,
   schema: {
@@ -42,8 +43,8 @@ export default defineConfig({
       resolve,
       previewUrl: {
         previewMode: {
-          enable: "/api/draft-mode/enable",
-          disable: "/api/draft-mode/disable",
+          enable: routes.draftMode.enable,
+          disable: routes.draftMode.disable,
         },
       },
     }),

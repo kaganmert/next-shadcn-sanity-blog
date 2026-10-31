@@ -11,6 +11,25 @@ export function urlForImage(source: SanityImageSource) {
   return builder.image(source).auto("format");
 }
 
+/**
+ * A `next/image` loader that lets the Sanity CDN resize the image (honouring
+ * crop and hotspot) instead of the Next.js image optimizer.
+ */
+export function sanityImageLoader(source: SanityImageSource) {
+  return ({
+    width,
+    quality,
+  }: {
+    src: string;
+    width: number;
+    quality?: number;
+  }) =>
+    urlForImage(source)
+      .width(width)
+      .quality(quality ?? 75)
+      .url();
+}
+
 type ImageWithAsset = { asset?: { _ref?: string } | null } | null | undefined;
 
 export type ImageDimensions = {

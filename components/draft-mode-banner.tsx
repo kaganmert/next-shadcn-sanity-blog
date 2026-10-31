@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useIsPresentationTool } from "next-sanity/hooks";
+import { routes } from "@/lib/routes";
 import { strings } from "@/lib/strings";
 
 /**
@@ -18,7 +19,7 @@ export function DraftModeBanner() {
     <div className="fixed right-4 bottom-4 z-50 flex items-center gap-3 rounded-lg border bg-background px-4 py-2 text-sm shadow-lg">
       <span>{strings.draftMode.label}</span>
       <a
-        href={`/api/draft-mode/disable?redirect=${encodeURIComponent(pathname)}`}
+        href={routes.draftMode.exit(pathname)}
         className="font-medium text-primary hover:underline"
       >
         {strings.draftMode.exit}

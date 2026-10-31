@@ -1,4 +1,5 @@
 import { createClient } from "next-sanity";
+import { routes } from "@/lib/routes";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 
 export const client = createClient({
@@ -8,5 +9,5 @@ export const client = createClient({
   useCdn: true,
   perspective: "published",
   // Stega encodes edit links into strings; it is only switched on per fetch in draft mode.
-  stega: { studioUrl: "/studio" },
+  stega: { studioUrl: routes.studio },
 });
