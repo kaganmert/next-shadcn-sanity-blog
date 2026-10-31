@@ -14,3 +14,11 @@ export function getSiteUrl(env: SiteUrlEnv = process.env): string {
   if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
   return "http://localhost:3000";
 }
+
+/** `path` (from `routes`) as an absolute URL on `siteUrl`. */
+export function absoluteUrl(
+  path: string,
+  siteUrl: string = getSiteUrl(),
+): string {
+  return `${siteUrl}${path}`;
+}

@@ -1,4 +1,6 @@
 import { routes } from "@/lib/routes";
+import { absoluteUrl } from "@/lib/site-url";
+import { strings } from "@/lib/strings";
 
 type FeedPost = {
   title: string;
@@ -9,18 +11,16 @@ type FeedPost = {
 
 type FeedSite = { title: string; description: string; url: string };
 
-/** An RSS 2.0 feed of posts. Links are absolute, dates are RFC 822 (UTC). */
+/** An RSS 2.0 feed of posts, served at `routes.rss`. Links are absolute, dates are RFC 822 (UTC). */
 export function buildRssFeed({
   site,
-  feedPath,
   posts,
 }: {
   site: FeedSite;
-  feedPath: string;
   posts: FeedPost[];
 }) {
   const items = posts.map((post) => {
-    const url = `${site.url}${routes.post(post.slug)}`;
+    const url = absoluteUrl(routes.post(post.slug), site.url);
     return [
       "<item>",
       `<title>${escapeXml(post.title)}</title>`,
@@ -39,8 +39,8 @@ export function buildRssFeed({
     `<title>${escapeXml(site.title)}</title>`,
     `<link>${escapeXml(site.url)}</link>`,
     `<description>${escapeXml(site.description)}</description>`,
-    "<language>en</language>",
-    `<atom:link href="${escapeXml(`${site.url}${feedPath}`)}" rel="self" type="application/rss+xml"/>`,
+    `<language>${strings.locale.lang}</language>`,
+    `<atom:link href="${escapeXml(absoluteUrl(routes.rss, site.url))}" rel="self" type="application/rss+xml"/>`,
     ...items,
     "</channel>",
     "</rss>",

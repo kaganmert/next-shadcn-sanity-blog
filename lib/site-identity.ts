@@ -3,11 +3,11 @@ import { fetchSanity, publishedFetchOptions } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 
 /**
- * Site name and description for metadata, the feed and OG images. Always the
+ * The site's name and description (its identity) for metadata, the feed and OG images. Always the
  * published settings (metadata is not previewed), with the UI-string fallbacks
  * until an editor fills in Settings.
  */
-export async function getSiteSettings() {
+export async function getSiteIdentity() {
   const { data: settings } = await fetchSanity({
     query: settingsQuery,
     ...publishedFetchOptions,

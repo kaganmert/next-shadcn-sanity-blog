@@ -4,12 +4,12 @@ import {
   categoriesQuery,
   categoryPageQuery,
   categorySlugsQuery,
+  indexableCategoriesQuery,
+  indexablePostsQuery,
   latestPostsQuery,
   postQuery,
   postSlugsQuery,
   postsQuery,
-  seoCategoriesQuery,
-  seoPostsQuery,
   settingsQuery,
   workPageQuery,
 } from "./queries";
@@ -270,10 +270,10 @@ describe("workPageQuery", () => {
   });
 });
 
-describe("seoPostsQuery", () => {
+describe("indexablePostsQuery", () => {
   it("lists posts newest first with what the feed and sitemap need", async () => {
     const posts = await runQuery<Array<Record<string, unknown>>>(
-      seoPostsQuery,
+      indexablePostsQuery,
       {
         documents: [
           {
@@ -322,9 +322,9 @@ describe("seoPostsQuery", () => {
   });
 });
 
-describe("seoCategoriesQuery", () => {
+describe("indexableCategoriesQuery", () => {
   it("lists categories with their slug and last update", async () => {
-    const categories = await runQuery(seoCategoriesQuery, {
+    const categories = await runQuery(indexableCategoriesQuery, {
       documents: [
         {
           _id: "c1",

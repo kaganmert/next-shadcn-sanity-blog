@@ -7,6 +7,9 @@ export const routes = {
   category: (slug: string) => `/blog/category/${encodeURIComponent(slug)}`,
   studio: "/studio",
   rss: "/rss.xml",
+  sitemap: "/sitemap.xml",
+  /** Route handlers (draft mode, etc.); not pages. */
+  api: "/api/",
   draftMode: {
     enable: "/api/draft-mode/enable",
     disable: "/api/draft-mode/disable",

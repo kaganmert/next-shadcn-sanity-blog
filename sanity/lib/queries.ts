@@ -94,8 +94,8 @@ export const workPageQuery = defineQuery(`{
   "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])
 }`);
 
-/** Posts for the RSS feed and sitemap, newest first. */
-export const seoPostsQuery =
+/** Posts that search engines and feed readers should see (sitemap, RSS), newest first. */
+export const indexablePostsQuery =
   defineQuery(`*[${isListedPost}] | order(publishedAt desc) {
   title,
   "slug": slug.current,
@@ -104,8 +104,8 @@ export const seoPostsQuery =
   "updatedAt": _updatedAt
 }`);
 
-/** Categories for the sitemap. */
-export const seoCategoriesQuery =
+/** Categories that search engines should see (sitemap). */
+export const indexableCategoriesQuery =
   defineQuery(`*[_type == "category" && defined(slug.current)] {
   "slug": slug.current,
   "updatedAt": _updatedAt

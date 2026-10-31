@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getSiteUrl } from "./site-url";
+import { absoluteUrl, getSiteUrl } from "./site-url";
 
 describe("getSiteUrl", () => {
   it("uses NEXT_PUBLIC_SITE_URL when it is set, without a trailing slash", () => {
@@ -37,5 +37,13 @@ describe("getSiteUrl", () => {
         VERCEL_URL: "blog-abc.vercel.app",
       }),
     ).toBe("https://blog-abc.vercel.app");
+  });
+});
+
+describe("absoluteUrl", () => {
+  it("joins a route path onto the site origin", () => {
+    expect(absoluteUrl("/blog/hello-world", "https://example.com")).toBe(
+      "https://example.com/blog/hello-world",
+    );
   });
 });

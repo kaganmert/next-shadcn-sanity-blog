@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const ogImageSize = { width: 1200, height: 630 };
 
-/** The shared look of every OG image: eyebrow, large title, footer line. */
+/** The shared look of every OG image: eyebrow, large title, optional footer line. */
 export function renderOgImage({
   eyebrow,
   title,
@@ -10,7 +10,7 @@ export function renderOgImage({
 }: {
   eyebrow: string;
   title: string;
-  footer: string;
+  footer?: string;
 }) {
   return new ImageResponse(
     <div
@@ -36,7 +36,7 @@ export function renderOgImage({
       >
         {title}
       </div>
-      <div style={{ fontSize: 28, color: "#a3a3a3" }}>{footer}</div>
+      <div style={{ fontSize: 28, color: "#a3a3a3" }}>{footer ?? ""}</div>
     </div>,
     ogImageSize,
   );

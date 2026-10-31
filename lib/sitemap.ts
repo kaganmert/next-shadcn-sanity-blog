@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routes } from "@/lib/routes";
+import { absoluteUrl } from "@/lib/site-url";
 
 type Dated = { slug: string; updatedAt: string };
 
@@ -24,15 +25,15 @@ export function buildSitemap({
     lastModified ? { url, lastModified } : { url };
 
   return [
-    dated(`${siteUrl}${routes.home}`, latestPost),
-    dated(`${siteUrl}${routes.blog}`, latestPost),
-    { url: `${siteUrl}${routes.work}` },
+    dated(absoluteUrl(routes.home, siteUrl), latestPost),
+    dated(absoluteUrl(routes.blog, siteUrl), latestPost),
+    { url: absoluteUrl(routes.work, siteUrl) },
     ...posts.map((post) => ({
-      url: `${siteUrl}${routes.post(post.slug)}`,
+      url: absoluteUrl(routes.post(post.slug), siteUrl),
       lastModified: post.updatedAt,
     })),
     ...categories.map((category) => ({
-      url: `${siteUrl}${routes.category(category.slug)}`,
+      url: absoluteUrl(routes.category(category.slug), siteUrl),
       lastModified: category.updatedAt,
     })),
   ];

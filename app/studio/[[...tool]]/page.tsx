@@ -7,14 +7,6 @@ import config from "@/sanity.config";
 
 export { metadata, viewport } from "next-sanity/studio";
 
-/**
- * Prerender the Studio shell at /studio. Every deeper Studio URL renders the
- * same client-side app, so nothing about the page depends on the request.
- */
-export function generateStaticParams() {
-  return [{ tool: [] }];
-}
-
 export default function StudioPage() {
   return <NextStudio config={config} />;
 }

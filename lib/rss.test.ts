@@ -9,7 +9,7 @@ const site = {
 
 describe("buildRssFeed", () => {
   it("describes the channel with absolute links and the feed's own URL", () => {
-    const xml = buildRssFeed({ site, feedPath: "/rss.xml", posts: [] });
+    const xml = buildRssFeed({ site, posts: [] });
     expect(xml).toMatch(
       /^<\?xml version="1.0" encoding="UTF-8"\?>\n<rss version="2.0"/,
     );
@@ -23,7 +23,6 @@ describe("buildRssFeed", () => {
   it("adds one item per post with an absolute link, guid and RFC 822 date", () => {
     const xml = buildRssFeed({
       site,
-      feedPath: "/rss.xml",
       posts: [
         {
           title: "Hello",
@@ -49,7 +48,6 @@ describe("buildRssFeed", () => {
   it("escapes characters that would break the XML", () => {
     const xml = buildRssFeed({
       site,
-      feedPath: "/rss.xml",
       posts: [
         {
           title: 'Tags <b> & "quotes"',

@@ -6,7 +6,7 @@ import { DraftModeBanner } from "@/components/draft-mode-banner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { routes } from "@/lib/routes";
-import { getSiteSettings } from "@/lib/site-settings";
+import { getSiteIdentity } from "@/lib/site-identity";
 import { getSiteUrl } from "@/lib/site-url";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
@@ -18,20 +18,25 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Cached and argument-free, so it never touches request data such as the
- * Studio's runtime params (the Studio route sits outside this layout). Cached values must be serializable, so
- * metadataBase is a string rather than a URL.
+ * Cached and argument-free so its cache key never includes request data.
+ * Site metadata lives in this layout, not the root one, because the root
+ * version blocked the /studio prerender. Cached values must be serializable,
+ * so metadataBase is a string rather than a URL.
  */
 async function siteMetadata(): Promise<Metadata> {
   "use cache";
   // Sanity Live revalidates the settings it reads, like the page content.
   cacheLife("max");
-  const site = await getSiteSettings();
+  const site = await getSiteIdentity();
   return {
     metadataBase: getSiteUrl(),
     title: { default: site.title, template: `%s · ${site.title}` },
     description: site.description,
-    openGraph: { type: "website", siteName: site.title, locale: "en_US" },
+    openGraph: {
+      type: "website",
+      siteName: site.title,
+      locale: strings.locale.openGraph,
+    },
     twitter: { card: "summary_large_image" },
     alternates: {
       types: {

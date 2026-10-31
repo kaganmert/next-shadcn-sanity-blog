@@ -518,9 +518,9 @@ export type WorkPageQueryResult = {
 };
 
 // Source: sanity/lib/queries.ts
-// Variable: seoPostsQuery
+// Variable: indexablePostsQuery
 // Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {  title,  "slug": slug.current,  excerpt,  publishedAt,  "updatedAt": _updatedAt}
-export type SeoPostsQueryResult = Array<{
+export type IndexablePostsQueryResult = Array<{
   title: string;
   slug: string;
   excerpt: string;
@@ -529,9 +529,9 @@ export type SeoPostsQueryResult = Array<{
 }>;
 
 // Source: sanity/lib/queries.ts
-// Variable: seoCategoriesQuery
+// Variable: indexableCategoriesQuery
 // Query: *[_type == "category" && defined(slug.current)] {  "slug": slug.current,  "updatedAt": _updatedAt}
-export type SeoCategoriesQueryResult = Array<{
+export type IndexableCategoriesQueryResult = Array<{
   slug: string;
   updatedAt: string;
 }>;
@@ -548,8 +548,8 @@ declare global {
     '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
     '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
     '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
-    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "updatedAt": _updatedAt\n}': SeoPostsQueryResult;
-    '*[_type == "category" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': SeoCategoriesQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "updatedAt": _updatedAt\n}': IndexablePostsQueryResult;
+    '*[_type == "category" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableCategoriesQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

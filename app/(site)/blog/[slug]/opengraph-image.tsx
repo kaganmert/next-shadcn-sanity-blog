@@ -1,14 +1,15 @@
 import { notFound } from "next/navigation";
 import { formatDate } from "@/lib/format-date";
 import { renderOgImage } from "@/lib/og-image";
-import { getSiteSettings } from "@/lib/site-settings";
+import { getSiteIdentity } from "@/lib/site-identity";
 import { withPlaceholderParam } from "@/lib/static-params";
+import { strings } from "@/lib/strings";
 import { fetchSanity, publishedFetchOptions } from "@/sanity/lib/live";
 import { postQuery, postSlugsQuery } from "@/sanity/lib/queries";
 
 export { ogImageSize as size } from "@/lib/og-image";
 export const contentType = "image/png";
-export const alt = "Post preview";
+export const alt = strings.og.postAlt;
 
 export async function generateStaticParams() {
   const { data } = await fetchSanity({
@@ -26,7 +27,7 @@ export default async function PostOpengraphImage({
 }) {
   const { slug } = await params;
   const [site, { data: post }] = await Promise.all([
-    getSiteSettings(),
+    getSiteIdentity(),
     fetchSanity({
       query: postQuery,
       params: { slug },
