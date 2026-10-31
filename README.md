@@ -1,26 +1,24 @@
-# Next Blog Template
+# next-shadcn-sanity-blog
 
-- **Framework:** Next.js
-- **Headless CMS**: Sanity.io
-- **Deployment:** Vercel
-- **Styling:** Tailwind CSS, shadcn/ui & Aceternity UI.
-- **Analytics:** Vercel Analytics
+A personal blog and portfolio built with Next.js 16, Sanity, Tailwind CSS v4 and shadcn/ui.
 
-## Running Locally
+> The project is being rebuilt from scratch. Track progress in [NSB-01](https://github.com/kaganmert/next-shadcn-sanity-blog/issues/1). Full setup docs land with NSB-11.
 
-This application requires Node.js v18.17+.
+## Requirements
 
-`git clone https://github.com/kaganmert/next-shadcn-sanity-blog`
+- Node.js: the version in `.nvmrc`
+- pnpm (via `corepack enable`)
 
-`cd next-shadcn-sanity-blog`
+## Scripts
 
-`pnpm install`
-
-`pnpm run dev`
-
-Create a .env file similar to .env.example.
+| Command          | What it does                     |
+| ---------------- | -------------------------------- |
+| `pnpm dev`       | Start the dev server             |
+| `pnpm build`     | Production build                 |
+| `pnpm lint`      | Biome lint + format check        |
+| `pnpm format`    | Apply Biome fixes and formatting |
+| `pnpm typecheck` | Generate route types and run tsc |
 
 ## License
 
-- You are free to use this code as inspiration.
-- Crediting the author is appreciated.
+See [LICENSE](./LICENSE).
