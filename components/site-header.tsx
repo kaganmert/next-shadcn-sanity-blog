@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { strings } from "@/lib/strings";
 
+// TODO(NSB-06): read navigation from the Sanity `settings` singleton.
 const navItems = [
   { href: "/blog", label: strings.nav.blog },
   { href: "/work", label: strings.nav.work },
@@ -9,7 +10,7 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-4 py-6 sm:px-6">
+    <header className="page-column flex items-center justify-between gap-4 py-6">
       <Link
         href="/"
         className="truncate font-semibold tracking-tight hover:text-primary"

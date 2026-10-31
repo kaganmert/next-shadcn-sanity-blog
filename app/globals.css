@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -82,16 +81,17 @@
   --ring: oklch(0.74 0.13 250 / 60%);
 }
 
+/* The page's content column: header, main and footer all share this width. */
+@utility page-column {
+  @apply mx-auto w-full max-w-2xl px-4 sm:px-6;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   html {
     @apply font-sans;
-    color-scheme: light;
-  }
-  html.dark {
-    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground antialiased;

@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: strings.siteName,
-  description: "A personal blog and portfolio built with Next.js and Sanity.",
+  description: strings.siteDescription,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // next-themes sets the theme class on <html> before hydration.
+    // next-themes adds the theme class to <html> before hydration.
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
@@ -43,10 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {strings.skipToContent}
           </a>
           <SiteHeader />
-          <main
-            id="content"
-            className="mx-auto w-full max-w-2xl flex-1 px-4 pb-16 sm:px-6"
-          >
+          <main id="content" className="page-column flex-1 pb-16">
             {children}
           </main>
           <SiteFooter />
