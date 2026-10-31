@@ -1,35 +1,38 @@
 import {
+  PortableText,
   type PortableTextBlockComponent,
   type PortableTextComponents,
-  PortableText as PortableTextRenderer,
 } from "@portabletext/react";
 import { CodeBlock } from "@/components/code-block";
-import { SanityImage } from "@/components/sanity-image";
+import { ARTICLE_IMAGE_SIZES, SanityImage } from "@/components/sanity-image";
 import { headingIds } from "@/lib/heading-ids";
-import type { BlockContent } from "@/sanity.types";
+import { strings } from "@/lib/strings";
+import type { BlockContent, Code } from "@/sanity.types";
 
 type ImageBlock = Extract<BlockContent[number], { _type: "image" }>;
-type CodeBlockValue = { code?: string; language?: string; filename?: string };
 
 /** Renders a post body: headings get stable anchor ids, code is highlighted on the server. */
-export function PortableText({ value }: { value: BlockContent }) {
+export function PostBody({ value }: { value: BlockContent }) {
   const ids = headingIds(value);
 
+  // The anchor sits next to the heading text rather than around it, so links
+  // inside a heading never end up nested in another link.
   const heading =
     (Tag: "h2" | "h3" | "h4"): PortableTextBlockComponent =>
     ({ children, value: block }) => {
       const id = block._key ? ids.get(block._key) : undefined;
       return (
         <Tag id={id} className="group scroll-mt-24">
-          <a href={`#${id}`} className="heading-anchor">
-            {children}
-            <span
-              aria-hidden
-              className="ml-2 text-muted-foreground opacity-0 group-hover:opacity-100"
+          {children}
+          {id ? (
+            <a
+              href={`#${id}`}
+              aria-label={strings.post.linkToSection}
+              className="heading-anchor"
             >
               #
-            </span>
-          </a>
+            </a>
+          ) : null}
         </Tag>
       );
     };
@@ -57,13 +60,13 @@ export function PortableText({ value }: { value: BlockContent }) {
         <figure>
           <SanityImage
             image={image}
-            sizes="(min-width: 768px) 672px, 100vw"
+            sizes={ARTICLE_IMAGE_SIZES}
             className="rounded-lg"
           />
           {image.caption ? <figcaption>{image.caption}</figcaption> : null}
         </figure>
       ),
-      code: ({ value: code }: { value: CodeBlockValue }) =>
+      code: ({ value: code }: { value: Code }) =>
         code.code ? (
           <CodeBlock
             code={code.code}
@@ -74,5 +77,5 @@ export function PortableText({ value }: { value: BlockContent }) {
     },
   };
 
-  return <PortableTextRenderer value={value} components={components} />;
+  return <PortableText value={value} components={components} />;
 }

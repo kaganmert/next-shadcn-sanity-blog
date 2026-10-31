@@ -8,6 +8,9 @@ import {
   urlForImage,
 } from "@/sanity/lib/image";
 
+/** `sizes` for images that span the article column (max-w-2xl). */
+export const ARTICLE_IMAGE_SIZES = "(min-width: 768px) 672px, 100vw";
+
 type SanityImageProps = Omit<
   ImageProps,
   "src" | "alt" | "loader" | "width" | "height"

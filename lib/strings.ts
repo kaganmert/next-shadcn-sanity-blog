@@ -10,8 +10,9 @@ export const strings = {
   home: {
     intro: "Writing about software, design and the things in between.",
     latestPosts: "Latest posts",
-    allPosts: "All posts",
   },
+  /** Link back to the full post list, used on the home, category and post pages. */
+  allPosts: "All posts",
   blog: {
     title: "Blog",
     categories: "Categories",
@@ -19,13 +20,11 @@ export const strings = {
   },
   post: {
     by: "By",
-    categories: "Categories",
-    backToBlog: "All posts",
+    linkToSection: "Link to this section",
   },
   category: {
     eyebrow: "Category",
     empty: "No posts in this category yet.",
-    backToBlog: "All posts",
   },
   skipToContent: "Skip to content",
   nav: {

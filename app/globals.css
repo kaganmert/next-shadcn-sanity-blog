@@ -117,9 +117,15 @@
   color: var(--shiki-dark);
 }
 
-/* Heading anchors in post bodies look like headings, not links. */
+/* The "#" link after a heading in a post body: quiet until the heading is hovered. */
 .prose .heading-anchor {
-  color: inherit;
-  font-weight: inherit;
+  margin-left: 0.5rem;
+  color: var(--muted-foreground);
+  font-weight: 400;
   text-decoration: none;
+  opacity: 0;
+}
+.prose .group:hover .heading-anchor,
+.prose .heading-anchor:focus-visible {
+  opacity: 1;
 }

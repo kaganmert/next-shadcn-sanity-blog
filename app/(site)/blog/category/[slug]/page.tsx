@@ -86,7 +86,7 @@ async function Category({
         href={routes.blog}
         className="inline-block text-primary text-sm hover:underline"
       >
-        ← {strings.category.backToBlog}
+        ← {strings.allPosts}
       </Link>
     </div>
   );

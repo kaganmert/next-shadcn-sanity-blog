@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PortableText } from "@/components/portable-text";
-import { SanityImage } from "@/components/sanity-image";
+import { PostBody } from "@/components/post-body";
+import { ARTICLE_IMAGE_SIZES, SanityImage } from "@/components/sanity-image";
 import { formatDate } from "@/lib/format-date";
 import { routes } from "@/lib/routes";
 import { withPlaceholderParam } from "@/lib/static-params";
@@ -87,7 +87,7 @@ async function Post({
           ) : null}
           {post.categories?.length ? (
             <ul
-              aria-label={strings.post.categories}
+              aria-label={strings.blog.categories}
               className="flex flex-wrap gap-2"
             >
               {post.categories.map((category) => (
@@ -109,14 +109,14 @@ async function Post({
         <SanityImage
           image={post.coverImage}
           priority
-          sizes="(min-width: 768px) 672px, 100vw"
+          sizes={ARTICLE_IMAGE_SIZES}
           className="mt-8 w-full rounded-lg"
         />
       ) : null}
 
       {post.body?.length ? (
         <div className="prose prose-neutral dark:prose-invert mt-10 max-w-none prose-a:text-primary prose-headings:tracking-tight prose-code:before:content-none prose-code:after:content-none">
-          <PortableText value={post.body} />
+          <PostBody value={post.body} />
         </div>
       ) : null}
 
@@ -124,7 +124,7 @@ async function Post({
         href={routes.blog}
         className="mt-12 inline-block text-primary text-sm hover:underline"
       >
-        ← {strings.post.backToBlog}
+        ← {strings.allPosts}
       </Link>
     </article>
   );
