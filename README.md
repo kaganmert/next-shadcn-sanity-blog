@@ -11,15 +11,21 @@ A personal blog and portfolio built with Next.js 16, Sanity, Tailwind CSS v4 and
 
 ## Scripts
 
-| Command          | What it does                     |
-| ---------------- | -------------------------------- |
-| `pnpm dev`       | Start the dev server             |
-| `pnpm build`     | Production build                 |
-| `pnpm lint`      | Biome lint + format check        |
-| `pnpm format`    | Apply Biome fixes and formatting |
-| `pnpm typecheck` | Generate route types and run tsc |
+| Command          | What it does                                               |
+| ---------------- | ---------------------------------------------------------- |
+| `pnpm dev`       | Start the dev server                                       |
+| `pnpm build`     | Production build                                           |
+| `pnpm lint`      | Biome lint + format check                                  |
+| `pnpm format`    | Apply Biome fixes and formatting                           |
+| `pnpm typecheck` | Generate route types and run tsc                           |
+| `pnpm typegen`   | Extract the Sanity schema and regenerate `sanity.types.ts` |
+| `pnpm seed`      | Import the sample content in `sanity/seed`                 |
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests (once a `test` script exists) and build on every pull request and on pushes to `master`.
+
+## Sanity
+
+The Studio is embedded at `/studio`. Schemas live in `sanity/schemaTypes`, and `settings` is a singleton (see `sanity/structure.ts`). To start from sample content, follow `sanity/seed/README.md`.
 
 ## License
 
