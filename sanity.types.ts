@@ -418,21 +418,13 @@ export type SettingsQueryResult =
 
 // Source: sanity/lib/queries.ts
 // Variable: postsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }}
+// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  "categories": categories[]->{ title, "slug": slug.current }}
 export type PostsQueryResult = Array<{
   _id: string;
   title: string;
   slug: string;
   excerpt: string;
   publishedAt: string;
-  coverImage: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  } | null;
   categories: Array<{
     title: string;
     slug: string;
@@ -441,21 +433,13 @@ export type PostsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: latestPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }}
+// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {    _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  "categories": categories[]->{ title, "slug": slug.current }}
 export type LatestPostsQueryResult = Array<{
   _id: string;
   title: string;
   slug: string;
   excerpt: string;
   publishedAt: string;
-  coverImage: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  } | null;
   categories: Array<{
     title: string;
     slug: string;
@@ -473,7 +457,7 @@ export type CategoriesQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: categoryPageQuery
-// Query: *[_type == "category" && slug.current == $slug][0] {  title,  "slug": slug.current,  description,  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {      _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "categories": categories[]->{ title, "slug": slug.current }  }}
+// Query: *[_type == "category" && slug.current == $slug][0] {  title,  "slug": slug.current,  description,  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {      _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  "categories": categories[]->{ title, "slug": slug.current }  }}
 export type CategoryPageQueryResult = {
   title: string;
   slug: string;
@@ -484,14 +468,6 @@ export type CategoryPageQueryResult = {
     slug: string;
     excerpt: string;
     publishedAt: string;
-    coverImage: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
     categories: Array<{
       title: string;
       slug: string;
@@ -510,10 +486,10 @@ export type CategorySlugsQueryResult = Array<{
 declare global {
   interface SanityQueries {
     '*[_id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
-    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': PostsQueryResult;
-    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': LatestPostsQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': PostsQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': LatestPostsQueryResult;
     '*[_type == "category" && defined(slug.current)] | order(title asc) {\n  title,\n  "slug": slug.current,\n  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])\n}': CategoriesQueryResult;
-    '*[_type == "category" && slug.current == $slug][0] {\n  title,\n  "slug": slug.current,\n  description,\n  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n  }\n}': CategoryPageQueryResult;
+    '*[_type == "category" && slug.current == $slug][0] {\n  title,\n  "slug": slug.current,\n  description,\n  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n  }\n}': CategoryPageQueryResult;
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
   }
 }

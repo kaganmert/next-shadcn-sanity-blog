@@ -19,6 +19,12 @@ import { categoryPageQuery, categorySlugsQuery } from "@/sanity/lib/queries";
 export const ensureStatic = "navigation";
 
 /**
+ * Navigating here may wait for the page: awaiting `params` before rendering is
+ * what lets an unknown slug return a 404 status (see ensureStatic above).
+ */
+export const instant = false;
+
+/**
  * Prerenders every category that exists at build time. A category created
  * later is rendered on its first request and then cached, so it appears
  * without a redeploy.
@@ -71,7 +77,11 @@ async function Category({
           </p>
         ) : null}
       </header>
-      <PostList posts={category.posts} emptyMessage={strings.category.empty} />
+      <PostList
+        posts={category.posts}
+        emptyMessage={strings.category.empty}
+        headingLevel="h2"
+      />
       <Link
         href={routes.blog}
         className="inline-block text-primary text-sm hover:underline"

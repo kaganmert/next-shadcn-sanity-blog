@@ -49,7 +49,11 @@ async function Blog({ fetchOptions }: { fetchOptions: FetchOptions }) {
           </nav>
         ) : null}
       </header>
-      <PostList posts={posts} emptyMessage={strings.blog.empty} />
+      <PostList
+        posts={posts}
+        emptyMessage={strings.blog.empty}
+        headingLevel="h2"
+      />
     </div>
   );
 }

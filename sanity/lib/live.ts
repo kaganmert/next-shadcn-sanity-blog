@@ -36,14 +36,24 @@ const cachedSanity: StrictDefinedFetchType = async (options) => {
 };
 
 /**
- * Fetch from Sanity. Published reads go through the shared cache; draft reads
- * skip it, because Next.js never stores cached results in draft mode and
- * re-running a `'use cache'` scope there logs "Unexpected cache miss" errors.
+ * Draft reads get a private cache: reused within one request, never stored
+ * across requests. `sanityFetch` tags its results with `cacheTag()`, which
+ * must run inside a cache scope, and the shared cache never stores results
+ * in draft mode anyway.
+ */
+const privateCachedSanity: StrictDefinedFetchType = async (options) => {
+  "use cache: private";
+  return sanityFetch(options);
+};
+
+/**
+ * Fetch from Sanity: published reads use the shared cache that Sanity Live
+ * revalidates, and draft reads use a per-request private cache.
  */
 export const fetchSanity: StrictDefinedFetchType = async (options) =>
   options.perspective === "published"
     ? cachedSanity(options)
-    : sanityFetch(options);
+    : privateCachedSanity(options);
 
 export interface FetchOptions {
   perspective: LivePerspective;
@@ -68,5 +78,11 @@ export async function getFetchOptions(): Promise<FetchOptions> {
   const jar = await cookies();
   const perspective = await resolvePerspectiveFromCookies({ cookies: jar });
   const variant = await resolveVariantFromCookies({ cookies: jar });
-  return { perspective: perspective ?? "drafts", variant, stega: true };
+  // Leave `variant` out when there is none: cache keys are built from these
+  // arguments, so they must be identical on every render of the request.
+  return {
+    perspective: perspective ?? "drafts",
+    stega: true,
+    ...(variant ? { variant } : {}),
+  };
 }

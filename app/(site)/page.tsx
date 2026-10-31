@@ -6,7 +6,7 @@ import { WithFetchOptions } from "@/sanity/lib/fetch-options";
 import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
 import { latestPostsQuery, settingsQuery } from "@/sanity/lib/queries";
 
-const LATEST_POSTS = 5;
+const LATEST_POSTS_LIMIT = 5;
 
 export default function HomePage() {
   return (
@@ -21,7 +21,7 @@ async function Home({ fetchOptions }: { fetchOptions: FetchOptions }) {
     fetchSanity({ query: settingsQuery, ...fetchOptions }),
     fetchSanity({
       query: latestPostsQuery,
-      params: { limit: LATEST_POSTS },
+      params: { limit: LATEST_POSTS_LIMIT },
       ...fetchOptions,
     }),
   ]);
@@ -51,7 +51,11 @@ async function Home({ fetchOptions }: { fetchOptions: FetchOptions }) {
             {strings.home.allPosts}
           </Link>
         </div>
-        <PostList posts={posts} emptyMessage={strings.blog.empty} />
+        <PostList
+          posts={posts}
+          emptyMessage={strings.blog.empty}
+          headingLevel="h3"
+        />
       </section>
     </>
   );

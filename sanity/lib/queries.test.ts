@@ -38,7 +38,7 @@ describe("settingsQuery", () => {
 });
 
 describe("postsQuery", () => {
-  it("lists every post newest first with the fields a post card needs", async () => {
+  it("lists every post newest first with the fields a post summary needs", async () => {
     const posts =
       await runQuery<
         Array<{ slug: string; title: string; categories: { slug: string }[] }>

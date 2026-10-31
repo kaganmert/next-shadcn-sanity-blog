@@ -9,27 +9,29 @@ export const settingsQuery = defineQuery(`*[_id == "settings"][0]{
   socialLinks[]{ label, url }
 }`);
 
-/** Fields a post card needs: link, title, excerpt, date, cover and categories. */
-const postCardFields = /* groq */ `
+/** A post that can be linked to: it has a slug. */
+const isListedPost = /* groq */ `_type == "post" && defined(slug.current)`;
+
+/** Fields a post summary in a list needs: link, title, excerpt, date and categories. */
+const postSummaryFields = /* groq */ `
   _id,
   title,
   "slug": slug.current,
   excerpt,
   publishedAt,
-  coverImage,
   "categories": categories[]->{ title, "slug": slug.current }
 `;
 
 /** Every post with a slug, newest first. */
 export const postsQuery =
-  defineQuery(`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
-  ${postCardFields}
+  defineQuery(`*[${isListedPost}] | order(publishedAt desc) {
+  ${postSummaryFields}
 }`);
 
 /** The newest `$limit` posts with a slug. */
 export const latestPostsQuery =
-  defineQuery(`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {
-  ${postCardFields}
+  defineQuery(`*[${isListedPost}] | order(publishedAt desc) [0...$limit] {
+  ${postSummaryFields}
 }`);
 
 /** Every category, A to Z, with the number of posts filed under it. */
@@ -37,7 +39,7 @@ export const categoriesQuery =
   defineQuery(`*[_type == "category" && defined(slug.current)] | order(title asc) {
   title,
   "slug": slug.current,
-  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])
+  "postCount": count(*[${isListedPost} && references(^._id)])
 }`);
 
 /** One category and the posts filed under it, newest first; null if the slug is unknown. */
@@ -46,8 +48,8 @@ export const categoryPageQuery =
   title,
   "slug": slug.current,
   description,
-  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {
-    ${postCardFields}
+  "posts": *[${isListedPost} && references(^._id)] | order(publishedAt desc) {
+    ${postSummaryFields}
   }
 }`);
 
