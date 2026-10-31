@@ -76,3 +76,19 @@ export const postQuery =
 export const postSlugsQuery = defineQuery(
   `*[${isListedPost}] { "slug": slug.current }`,
 );
+
+/** The work page: experiences (current role first, then newest start date) and the tech stack. */
+export const workPageQuery = defineQuery(`{
+  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {
+    _id,
+    role,
+    company,
+    url,
+    image,
+    description,
+    startDate,
+    endDate,
+    isCurrent
+  },
+  "techStack": *[_id == "settings"][0].techStack[]{ name, category }
+}`);

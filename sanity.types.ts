@@ -524,6 +524,51 @@ export type PostSlugsQueryResult = Array<{
   slug: string;
 }>;
 
+// Source: sanity/lib/queries.ts
+// Variable: workPageQuery
+// Query: {  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": *[_id == "settings"][0].techStack[]{ name, category }}
+export type WorkPageQueryResult = {
+  experiences: Array<{
+    _id: string;
+    role: string;
+    company: string;
+    url: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    description: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+    startDate: string;
+    endDate: string | null;
+    isCurrent: boolean | null;
+  }>;
+  techStack: Array<{
+    name: string;
+    category: string | null;
+  }> | null;
+};
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -535,6 +580,7 @@ declare global {
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
     '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
     '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
+    '{\n  "experiences": *[_type == "experience"] | order(isCurrent desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": *[_id == "settings"][0].techStack[]{ name, category }\n}': WorkPageQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too
