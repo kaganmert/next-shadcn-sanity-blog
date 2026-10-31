@@ -19,6 +19,8 @@ A personal blog and portfolio built with Next.js 16, Sanity, Tailwind CSS v4 and
 | `pnpm format`    | Apply Biome fixes and formatting |
 | `pnpm typecheck` | Generate route types and run tsc |
 
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, test and build on every pull request and on pushes to `master`.
+
 ## License
 
 See [LICENSE](./LICENSE).
