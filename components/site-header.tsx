@@ -1,27 +1,42 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { routes } from "@/lib/routes";
 import { strings } from "@/lib/strings";
+import { cachedSanity, type FetchOptions } from "@/sanity/lib/live";
+import { settingsQuery } from "@/sanity/lib/queries";
 
-// TODO(NSB-06): read navigation from the Sanity `settings` singleton.
-const navItems = [
-  { href: "/blog", label: strings.nav.blog },
-  { href: "/work", label: strings.nav.work },
-] as const;
+/** Used until the editor fills in navigation in Settings. */
+const defaultNavigation = [
+  { label: strings.nav.blog, href: routes.blog },
+  { label: strings.nav.work, href: routes.work },
+];
 
-export function SiteHeader() {
+export async function SiteHeader({
+  fetchOptions,
+}: {
+  fetchOptions: FetchOptions;
+}) {
+  const { data: settings } = await cachedSanity({
+    query: settingsQuery,
+    ...fetchOptions,
+  });
+  const navigation = settings?.navigation?.length
+    ? settings.navigation
+    : defaultNavigation;
+
   return (
     <header className="page-column flex items-center justify-between gap-4 py-6">
       <Link
-        href="/"
+        href={routes.home}
         className="truncate font-semibold tracking-tight hover:text-primary"
       >
-        {strings.siteName}
+        {settings?.title ?? strings.siteName}
       </Link>
       <nav
         aria-label={strings.nav.label}
         className="flex shrink-0 items-center gap-1 text-sm"
       >
-        {navItems.map((item) => (
+        {navigation.map((item) => (
           <Link
             key={item.href}
             href={item.href}

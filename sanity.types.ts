@@ -344,3 +344,85 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint;
+
+// Source: sanity/lib/queries.ts
+// Variable: settingsQuery
+// Query: *[_id == "settings"][0]{  title,  description,  intro,  navigation[]{ label, href },  socialLinks[]{ label, url }}
+export type SettingsQueryResult =
+  | {
+      title: null;
+      description: null;
+      intro: null;
+      navigation: null;
+      socialLinks: null;
+    }
+  | {
+      title: string;
+      description: null;
+      intro: null;
+      navigation: null;
+      socialLinks: null;
+    }
+  | {
+      title: string;
+      description: string;
+      intro: string | null;
+      navigation: Array<{
+        label: string;
+        href: string;
+      }> | null;
+      socialLinks: Array<{
+        label: string;
+        url: string;
+      }> | null;
+    }
+  | {
+      title: null;
+      description: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }> | null;
+      intro: null;
+      navigation: null;
+      socialLinks: null;
+    }
+  | {
+      title: string;
+      description: string | null;
+      intro: null;
+      navigation: null;
+      socialLinks: null;
+    }
+  | {
+      title: string | null;
+      description: string | null;
+      intro: null;
+      navigation: null;
+      socialLinks: null;
+    }
+  | null;
+
+// Query TypeMap
+declare global {
+  interface SanityQueries {
+    '*[_id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
+  }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
+}

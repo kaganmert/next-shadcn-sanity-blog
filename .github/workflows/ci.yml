@@ -40,7 +40,6 @@ jobs:
 
       - run: pnpm typecheck
 
-      # TODO(NSB-05): switch to `pnpm test` once Vitest adds the script.
-      - run: pnpm run --if-present test
+      - run: pnpm test
 
       - run: pnpm build

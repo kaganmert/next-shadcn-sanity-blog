@@ -7,8 +7,11 @@
 import { codeInput } from "@sanity/code-input";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
+import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { routes } from "./lib/routes";
 import { apiVersion, dataset, projectId } from "./sanity/env";
+import { resolve } from "./sanity/presentation/resolve";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { singletonDocumentActions, singletonTypes } from "./sanity/singletons";
 import { structure } from "./sanity/structure";
@@ -16,7 +19,7 @@ import { structure } from "./sanity/structure";
 export default defineConfig({
   name: "default",
   title: "next-shadcn-sanity-blog",
-  basePath: "/studio",
+  basePath: routes.studio,
   projectId,
   dataset,
   schema: {
@@ -36,6 +39,15 @@ export default defineConfig({
   },
   plugins: [
     structureTool({ structure }),
+    presentationTool({
+      resolve,
+      previewUrl: {
+        previewMode: {
+          enable: routes.draftMode.enable,
+          disable: routes.draftMode.disable,
+        },
+      },
+    }),
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
   ],

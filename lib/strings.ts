@@ -3,8 +3,8 @@
  * one place. Content (posts, experiences, site settings) comes from Sanity.
  */
 export const strings = {
-  // TODO(NSB-06): replace siteName/siteDescription and the home intro with the
-  // Sanity `settings` singleton once the data layer (NSB-05) is in place.
+  // Fallbacks used until the editor fills in the Sanity `settings` singleton.
+  // TODO(NSB-06): the home intro and NSB-09 metadata read from `settings` too.
   siteName: "next-shadcn-sanity-blog",
   siteDescription:
     "A personal blog and portfolio built with Next.js and Sanity.",
@@ -20,6 +20,10 @@ export const strings = {
   },
   theme: {
     toggle: "Toggle theme",
+  },
+  draftMode: {
+    label: "Viewing drafts",
+    exit: "Exit draft mode",
   },
   footer: {
     builtWith: "Built with Next.js and Sanity.",

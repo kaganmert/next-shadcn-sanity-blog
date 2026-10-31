@@ -19,12 +19,14 @@
     "format": "biome check --write",
     "typecheck": "next typegen && tsc --noEmit",
     "typegen": "sanity schema extract --path=./sanity/extract.json --enforce-required-fields --force && sanity typegen generate",
-    "seed": "sanity dataset import sanity/seed/data.ndjson --dataset production --replace"
+    "seed": "sanity dataset import sanity/seed/data.ndjson --dataset production --replace",
+    "test": "vitest run"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@sanity/client": "^8.14.1",
     "@sanity/code-input": "^7.3.14",
+    "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.21.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.1",
@@ -35,6 +37,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "sanity": "^6.21.0",
+    "server-only": "^0.0.1",
     "shadcn": "^4.23.0",
     "styled-components": "^6.6.0"
   },
@@ -44,7 +47,9 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "groq-js": "^2.0.1",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
   }
 }
