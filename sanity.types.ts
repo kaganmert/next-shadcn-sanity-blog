@@ -482,6 +482,48 @@ export type CategorySlugsQueryResult = Array<{
   slug: string;
 }>;
 
+// Source: sanity/lib/queries.ts
+// Variable: postQuery
+// Query: *[_type == "post" && defined(slug.current) && slug.current == $slug][0] {  _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  coverImage,  "author": author->{ name, image },  "categories": categories[]->{ title, "slug": slug.current },  body}
+export type PostQueryResult = {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  author: {
+    name: string;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+  } | null;
+  categories: Array<{
+    title: string;
+    slug: string;
+  }> | null;
+  body: BlockContent | null;
+} | null;
+
+// Source: sanity/lib/queries.ts
+// Variable: postSlugsQuery
+// Query: *[_type == "post" && defined(slug.current)] { "slug": slug.current }
+export type PostSlugsQueryResult = Array<{
+  slug: string;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -491,6 +533,8 @@ declare global {
     '*[_type == "category" && defined(slug.current)] | order(title asc) {\n  title,\n  "slug": slug.current,\n  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])\n}': CategoriesQueryResult;
     '*[_type == "category" && slug.current == $slug][0] {\n  title,\n  "slug": slug.current,\n  description,\n  "posts": *[_type == "post" && defined(slug.current) && references(^._id)] | order(publishedAt desc) {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n  }\n}': CategoryPageQueryResult;
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
+    '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
+    '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

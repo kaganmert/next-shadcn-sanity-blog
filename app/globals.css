@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -96,4 +97,29 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/* Shiki emits both themes as CSS variables; pick the one for the active theme. */
+.code-block pre {
+  overflow-x: auto;
+  padding: 1rem;
+  background-color: var(--shiki-light-bg);
+}
+.code-block pre,
+.code-block span {
+  color: var(--shiki-light);
+}
+.dark .code-block pre {
+  background-color: var(--shiki-dark-bg);
+}
+.dark .code-block pre,
+.dark .code-block span {
+  color: var(--shiki-dark);
+}
+
+/* Heading anchors in post bodies look like headings, not links. */
+.prose .heading-anchor {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
 }

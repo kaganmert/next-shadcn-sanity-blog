@@ -17,6 +17,11 @@ export const strings = {
     categories: "Categories",
     empty: "No posts yet.",
   },
+  post: {
+    by: "By",
+    categories: "Categories",
+    backToBlog: "All posts",
+  },
   category: {
     eyebrow: "Category",
     empty: "No posts in this category yet.",

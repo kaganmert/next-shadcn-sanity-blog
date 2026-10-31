@@ -5,6 +5,8 @@ import {
   categoryPageQuery,
   categorySlugsQuery,
   latestPostsQuery,
+  postQuery,
+  postSlugsQuery,
   postsQuery,
   settingsQuery,
 } from "./queries";
@@ -135,5 +137,47 @@ describe("categorySlugsQuery", () => {
       ]),
     );
     expect(await runQuery<unknown[]>(categorySlugsQuery)).toHaveLength(3);
+  });
+});
+
+describe("postQuery", () => {
+  it("returns a post with its author, categories, cover and body", async () => {
+    const post = await runQuery<
+      Record<string, unknown> & { body: { _type: string }[] }
+    >(postQuery, {
+      params: { slug: "hello-world" },
+    });
+
+    expect(post).toMatchObject({
+      title: "Hello, world",
+      slug: "hello-world",
+      excerpt:
+        "The first post on the rebuilt site: what changed, and why the stack is Next.js 16 with Sanity.",
+      publishedAt: "2026-10-20T09:00:00Z",
+      author: { name: "Sample Author" },
+      categories: [
+        { title: "Next.js", slug: "nextjs" },
+        { title: "Sanity", slug: "sanity" },
+      ],
+      coverImage: { alt: "Blue gradient with the words Hello, world" },
+    });
+    expect(post.body.map((block) => block._type)).toContain("code");
+  });
+
+  it("returns null for a slug no post has", async () => {
+    expect(
+      await runQuery(postQuery, { params: { slug: "missing" } }),
+    ).toBeNull();
+  });
+});
+
+describe("postSlugsQuery", () => {
+  it("returns one route param per post", async () => {
+    const params = await runQuery<{ slug: string }[]>(postSlugsQuery);
+    expect(params.map(({ slug }) => slug).sort()).toEqual([
+      "caching-with-use-cache",
+      "designing-for-reading",
+      "hello-world",
+    ]);
   });
 });
