@@ -1,12 +1,14 @@
+import { strings } from "@/lib/strings";
+
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-6 py-24">
-      <h1 className="font-semibold text-2xl tracking-tight">
-        next-shadcn-sanity-blog
+    <section className="py-12">
+      <h1 className="font-semibold text-3xl tracking-tight">
+        {strings.home.title}
       </h1>
-      <p className="mt-2 text-foreground/70">
-        Rebuilding on Next.js 16 and Sanity.
+      <p className="mt-3 max-w-prose text-muted-foreground leading-7">
+        {strings.home.intro}
       </p>
-    </main>
+    </section>
   );
 }
