@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostBody } from "@/components/post-body";
 import { ARTICLE_IMAGE_SIZES, SanityImage } from "@/components/sanity-image";
 import { formatDate } from "@/lib/format-date";
 import { routes } from "@/lib/routes";
+import { getSiteIdentity } from "@/lib/site-identity";
 import { withPlaceholderParam } from "@/lib/static-params";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
@@ -27,6 +29,37 @@ export async function generateStaticParams() {
     ...publishedFetchOptions,
   });
   return withPlaceholderParam(data);
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/blog/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const [site, { data: post }] = await Promise.all([
+    getSiteIdentity(),
+    fetchSanity({
+      query: postQuery,
+      params: { slug },
+      ...publishedFetchOptions,
+    }),
+  ]);
+  if (!post) return {};
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: routes.post(slug) },
+    // Next replaces (not merges) the layout's openGraph, so repeat the site-wide fields.
+    openGraph: {
+      type: "article",
+      url: routes.post(slug),
+      siteName: site.title,
+      locale: strings.locale.openGraph,
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.publishedAt,
+      authors: post.author?.name ? [post.author.name] : undefined,
+    },
+  };
 }
 
 export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {

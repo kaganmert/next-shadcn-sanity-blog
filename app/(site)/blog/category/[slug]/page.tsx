@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostList } from "@/components/post-list";
@@ -35,6 +36,23 @@ export async function generateStaticParams() {
     ...publishedFetchOptions,
   });
   return withPlaceholderParam(data);
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/blog/category/[slug]">): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: category } = await fetchSanity({
+    query: categoryPageQuery,
+    params: { slug },
+    ...publishedFetchOptions,
+  });
+  if (!category) return {};
+  return {
+    title: category.title,
+    description: category.description ?? undefined,
+    alternates: { canonical: routes.category(slug) },
+  };
 }
 
 export default async function CategoryPage({

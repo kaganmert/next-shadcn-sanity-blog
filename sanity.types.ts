@@ -347,74 +347,20 @@ export type AllSanitySchemaTypes =
 
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_id == "settings"][0]{  title,  description,  intro,  navigation[]{ label, href },  socialLinks[]{ label, url }}
-export type SettingsQueryResult =
-  | {
-      title: null;
-      description: null;
-      intro: null;
-      navigation: null;
-      socialLinks: null;
-    }
-  | {
-      title: string;
-      description: null;
-      intro: null;
-      navigation: null;
-      socialLinks: null;
-    }
-  | {
-      title: string;
-      description: string;
-      intro: string | null;
-      navigation: Array<{
-        label: string;
-        href: string;
-      }> | null;
-      socialLinks: Array<{
-        label: string;
-        url: string;
-      }> | null;
-    }
-  | {
-      title: null;
-      description: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "normal";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }> | null;
-      intro: null;
-      navigation: null;
-      socialLinks: null;
-    }
-  | {
-      title: string;
-      description: string | null;
-      intro: null;
-      navigation: null;
-      socialLinks: null;
-    }
-  | {
-      title: string | null;
-      description: string | null;
-      intro: null;
-      navigation: null;
-      socialLinks: null;
-    }
-  | null;
+// Query: *[_type == "settings" && _id == "settings"][0]{  title,  description,  intro,  navigation[]{ label, href },  socialLinks[]{ label, url }}
+export type SettingsQueryResult = {
+  title: string;
+  description: string;
+  intro: string | null;
+  navigation: Array<{
+    label: string;
+    href: string;
+  }> | null;
+  socialLinks: Array<{
+    label: string;
+    url: string;
+  }> | null;
+} | null;
 
 // Source: sanity/lib/queries.ts
 // Variable: postsQuery
@@ -526,7 +472,7 @@ export type PostSlugsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: workPageQuery
-// Query: {  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])}
+// Query: {  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])}
 export type WorkPageQueryResult = {
   experiences: Array<{
     _id: string;
@@ -571,10 +517,29 @@ export type WorkPageQueryResult = {
     | Array<never>;
 };
 
+// Source: sanity/lib/queries.ts
+// Variable: indexablePostsQuery
+// Query: *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {  title,  "slug": slug.current,  excerpt,  publishedAt,  "updatedAt": _updatedAt}
+export type IndexablePostsQueryResult = Array<{
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+  updatedAt: string;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: indexableCategoriesQuery
+// Query: *[_type == "category" && defined(slug.current)] {  "slug": slug.current,  "updatedAt": _updatedAt}
+export type IndexableCategoriesQueryResult = Array<{
+  slug: string;
+  updatedAt: string;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
+    '*[_type == "settings" && _id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': PostsQueryResult;
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': LatestPostsQueryResult;
     '*[_type == "category" && defined(slug.current)] | order(title asc) {\n  title,\n  "slug": slug.current,\n  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])\n}': CategoriesQueryResult;
@@ -582,7 +547,9 @@ declare global {
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
     '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
     '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
-    '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
+    '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
+    '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "updatedAt": _updatedAt\n}': IndexablePostsQueryResult;
+    '*[_type == "category" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableCategoriesQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

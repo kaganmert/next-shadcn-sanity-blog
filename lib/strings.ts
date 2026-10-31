@@ -3,6 +3,7 @@
  * one place. Content (posts, experiences, site settings) comes from Sanity.
  */
 export const strings = {
+  locale: { lang: "en", openGraph: "en_US" },
   // Fallbacks used until the editor fills in the Sanity `settings` singleton.
   siteName: "next-shadcn-sanity-blog",
   siteDescription:
@@ -33,6 +34,10 @@ export const strings = {
   category: {
     eyebrow: "Category",
     empty: "No posts in this category yet.",
+  },
+  og: {
+    siteAlt: "Site preview",
+    postAlt: "Post preview",
   },
   skipToContent: "Skip to content",
   nav: {

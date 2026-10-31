@@ -1,7 +1,9 @@
 import { PortableText } from "@portabletext/react";
+import type { Metadata } from "next";
 import { SanityImage } from "@/components/sanity-image";
 import { formatDateRange } from "@/lib/format-date";
 import { groupTechStack } from "@/lib/group-tech-stack";
+import { routes } from "@/lib/routes";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
 import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
@@ -9,6 +11,11 @@ import { workPageQuery } from "@/sanity/lib/queries";
 import type { WorkPageQueryResult } from "@/sanity.types";
 
 type Experience = WorkPageQueryResult["experiences"][number];
+
+export const metadata: Metadata = {
+  title: strings.work.title,
+  alternates: { canonical: routes.work },
+};
 
 export default function WorkPage() {
   return (

@@ -1,7 +1,8 @@
 import { defineQuery } from "next-sanity";
 
 /** Site identity and chrome from the `settings` singleton. */
-export const settingsQuery = defineQuery(`*[_id == "settings"][0]{
+export const settingsQuery =
+  defineQuery(`*[_type == "settings" && _id == "settings"][0]{
   title,
   description,
   intro,
@@ -90,5 +91,22 @@ export const workPageQuery = defineQuery(`{
     endDate,
     isCurrent
   },
-  "techStack": coalesce(*[_id == "settings"][0].techStack[]{ name, category }, [])
+  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])
+}`);
+
+/** Posts that search engines and feed readers should see (sitemap, RSS), newest first. */
+export const indexablePostsQuery =
+  defineQuery(`*[${isListedPost}] | order(publishedAt desc) {
+  title,
+  "slug": slug.current,
+  excerpt,
+  publishedAt,
+  "updatedAt": _updatedAt
+}`);
+
+/** Categories that search engines should see (sitemap). */
+export const indexableCategoriesQuery =
+  defineQuery(`*[_type == "category" && defined(slug.current)] {
+  "slug": slug.current,
+  "updatedAt": _updatedAt
 }`);

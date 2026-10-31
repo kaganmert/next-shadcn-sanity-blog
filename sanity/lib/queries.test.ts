@@ -4,6 +4,8 @@ import {
   categoriesQuery,
   categoryPageQuery,
   categorySlugsQuery,
+  indexableCategoriesQuery,
+  indexablePostsQuery,
   latestPostsQuery,
   postQuery,
   postSlugsQuery,
@@ -265,5 +267,76 @@ describe("workPageQuery", () => {
       experiences: [],
       techStack: [],
     });
+  });
+});
+
+describe("indexablePostsQuery", () => {
+  it("lists posts newest first with what the feed and sitemap need", async () => {
+    const posts = await runQuery<Array<Record<string, unknown>>>(
+      indexablePostsQuery,
+      {
+        documents: [
+          {
+            _id: "p1",
+            _type: "post",
+            title: "Old",
+            slug: { current: "old" },
+            excerpt: "A",
+            publishedAt: "2026-01-01T00:00:00Z",
+            _updatedAt: "2026-02-01T00:00:00Z",
+          },
+          {
+            _id: "p2",
+            _type: "post",
+            title: "New",
+            slug: { current: "new" },
+            excerpt: "B",
+            publishedAt: "2026-03-01T00:00:00Z",
+            _updatedAt: "2026-03-02T00:00:00Z",
+          },
+          {
+            _id: "p3",
+            _type: "post",
+            title: "No slug",
+            publishedAt: "2026-04-01T00:00:00Z",
+          },
+        ],
+      },
+    );
+    expect(posts).toEqual([
+      {
+        title: "New",
+        slug: "new",
+        excerpt: "B",
+        publishedAt: "2026-03-01T00:00:00Z",
+        updatedAt: "2026-03-02T00:00:00Z",
+      },
+      {
+        title: "Old",
+        slug: "old",
+        excerpt: "A",
+        publishedAt: "2026-01-01T00:00:00Z",
+        updatedAt: "2026-02-01T00:00:00Z",
+      },
+    ]);
+  });
+});
+
+describe("indexableCategoriesQuery", () => {
+  it("lists categories with their slug and last update", async () => {
+    const categories = await runQuery(indexableCategoriesQuery, {
+      documents: [
+        {
+          _id: "c1",
+          _type: "category",
+          title: "Next.js",
+          slug: { current: "nextjs" },
+          _updatedAt: "2026-05-01T00:00:00Z",
+        },
+      ],
+    });
+    expect(categories).toEqual([
+      { slug: "nextjs", updatedAt: "2026-05-01T00:00:00Z" },
+    ]);
   });
 });
