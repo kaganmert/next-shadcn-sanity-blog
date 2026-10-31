@@ -13,6 +13,9 @@ type RenderWithFetchOptions = (options: FetchOptions) => ReactNode;
  * renders straight away with the published options, so the result can be
  * prerendered into the static shell. In draft mode the options depend on
  * cookies, so it streams in behind a Suspense boundary.
+ *
+ * Keep every cookie read inside the draft branch: routes with
+ * `ensureStatic = "navigation"` must prerender without request-time data.
  */
 export async function WithFetchOptions({
   children,

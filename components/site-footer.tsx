@@ -1,5 +1,5 @@
 import { strings } from "@/lib/strings";
-import { cachedSanity, type FetchOptions } from "@/sanity/lib/live";
+import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 
 export async function SiteFooter({
@@ -7,7 +7,7 @@ export async function SiteFooter({
 }: {
   fetchOptions: FetchOptions;
 }) {
-  const { data: settings } = await cachedSanity({
+  const { data: settings } = await fetchSanity({
     query: settingsQuery,
     ...fetchOptions,
   });

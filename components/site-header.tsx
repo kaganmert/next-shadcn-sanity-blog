@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { routes } from "@/lib/routes";
 import { strings } from "@/lib/strings";
-import { cachedSanity, type FetchOptions } from "@/sanity/lib/live";
+import { type FetchOptions, fetchSanity } from "@/sanity/lib/live";
 import { settingsQuery } from "@/sanity/lib/queries";
 
 /** Used until the editor fills in navigation in Settings. */
@@ -16,7 +16,7 @@ export async function SiteHeader({
 }: {
   fetchOptions: FetchOptions;
 }) {
-  const { data: settings } = await cachedSanity({
+  const { data: settings } = await fetchSanity({
     query: settingsQuery,
     ...fetchOptions,
   });
