@@ -1,8 +1,15 @@
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
+import { DraftModeBanner } from "@/components/draft-mode-banner";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { strings } from "@/lib/strings";
+import { WithFetchOptions } from "@/sanity/lib/fetch-options";
+import { SanityLive } from "@/sanity/lib/live";
 
-export default function SiteLayout({ children }: LayoutProps<"/">) {
+export default async function SiteLayout({ children }: LayoutProps<"/">) {
+  const { isEnabled: isDraftMode } = await draftMode();
+
   return (
     <>
       <a
@@ -11,11 +18,22 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       >
         {strings.skipToContent}
       </a>
-      <SiteHeader />
+      <WithFetchOptions>
+        {(fetchOptions) => <SiteHeader fetchOptions={fetchOptions} />}
+      </WithFetchOptions>
       <main id="content" className="page-column flex-1 pb-16">
         {children}
       </main>
-      <SiteFooter />
+      <WithFetchOptions>
+        {(fetchOptions) => <SiteFooter fetchOptions={fetchOptions} />}
+      </WithFetchOptions>
+      <SanityLive includeDrafts={isDraftMode} />
+      {isDraftMode ? (
+        <>
+          <VisualEditing />
+          <DraftModeBanner />
+        </>
+      ) : null}
     </>
   );
 }

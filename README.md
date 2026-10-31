@@ -18,10 +18,11 @@ A personal blog and portfolio built with Next.js 16, Sanity, Tailwind CSS v4 and
 | `pnpm lint`      | Biome lint + format check                                  |
 | `pnpm format`    | Apply Biome fixes and formatting                           |
 | `pnpm typecheck` | Generate route types and run tsc                           |
+| `pnpm test`      | Run the Vitest suite                                       |
 | `pnpm typegen`   | Extract the Sanity schema and regenerate `sanity.types.ts` |
 | `pnpm seed`      | Import the sample content in `sanity/seed`                 |
 
-CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests (once a `test` script exists) and build on every pull request and on pushes to `master`.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on every pull request and on pushes to `master`.
 
 ## Sanity
 

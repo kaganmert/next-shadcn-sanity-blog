@@ -7,8 +7,10 @@
 import { codeInput } from "@sanity/code-input";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
+import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "./sanity/env";
+import { resolve } from "./sanity/presentation/resolve";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { singletonDocumentActions, singletonTypes } from "./sanity/singletons";
 import { structure } from "./sanity/structure";
@@ -36,6 +38,15 @@ export default defineConfig({
   },
   plugins: [
     structureTool({ structure }),
+    presentationTool({
+      resolve,
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+          disable: "/api/draft-mode/disable",
+        },
+      },
+    }),
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
   ],
