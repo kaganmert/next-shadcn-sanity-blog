@@ -29,6 +29,8 @@
     "@sanity/code-input": "^7.3.14",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.21.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.1",
     "lucide-react": "^1.65.0",

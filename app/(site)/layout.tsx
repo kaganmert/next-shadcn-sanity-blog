@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import { draftMode } from "next/headers";
@@ -72,6 +74,9 @@ export default async function SiteLayout({ children }: LayoutProps<"/">) {
         Presentation tool only. Outside it, a draft preview needs a reload.
       */}
       <SanityLive includeDrafts={isDraftMode} />
+      {/* Site traffic only; the Studio route sits outside this layout. */}
+      <Analytics />
+      <SpeedInsights />
       {isDraftMode ? (
         <>
           <VisualEditing />
