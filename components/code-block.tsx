@@ -28,9 +28,9 @@ export async function CodeBlock({
   const html = await cachedHighlight(code, language);
 
   return (
-    <figure className="not-prose my-6 overflow-hidden rounded-lg border text-sm">
+    <figure className="not-prose my-8 overflow-hidden rounded-sm border text-[0.85rem]">
       {filename ? (
-        <figcaption className="border-b bg-muted px-4 py-2 font-mono text-muted-foreground text-xs">
+        <figcaption className="border-b px-5 py-2.5 font-mono text-[0.7rem] text-muted-foreground tracking-wide">
           {filename}
         </figcaption>
       ) : null}

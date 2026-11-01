@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/back-link";
+import { PageTransition } from "@/components/page-transition";
 import { PostList } from "@/components/post-list";
 import { routes } from "@/lib/routes";
+import { stagger } from "@/lib/stagger";
 import { withPlaceholderParam } from "@/lib/static-params";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
@@ -60,9 +62,11 @@ export default async function CategoryPage({
 }: PageProps<"/blog/category/[slug]">) {
   const { slug } = await params;
   return (
-    <WithFetchOptions>
-      {(fetchOptions) => <Category slug={slug} fetchOptions={fetchOptions} />}
-    </WithFetchOptions>
+    <PageTransition>
+      <WithFetchOptions>
+        {(fetchOptions) => <Category slug={slug} fetchOptions={fetchOptions} />}
+      </WithFetchOptions>
+    </PageTransition>
   );
 }
 
@@ -81,31 +85,32 @@ async function Category({
   if (!category) notFound();
 
   return (
-    <div className="space-y-10 py-12">
-      <header className="space-y-2">
-        <p className="text-muted-foreground text-sm">
-          {strings.category.eyebrow}
-        </p>
-        <h1 className="font-semibold text-3xl tracking-tight">
+    <div className="pt-16 sm:pt-24">
+      <header className="space-y-5 pb-12">
+        <p className="ink-in label-mono">{strings.category.eyebrow}</p>
+        <h1
+          className="ink-in font-display font-semibold text-4xl tracking-[0.01em] sm:text-5xl"
+          style={stagger(1)}
+        >
           {category.title}
         </h1>
         {category.description ? (
-          <p className="max-w-prose text-muted-foreground leading-7">
+          <p
+            className="ink-in max-w-[34rem] font-serif text-muted-foreground text-xl leading-relaxed"
+            style={stagger(2)}
+          >
             {category.description}
           </p>
         ) : null}
       </header>
-      <PostList
-        posts={category.posts}
-        emptyMessage={strings.category.empty}
-        headingLevel="h2"
-      />
-      <Link
-        href={routes.blog}
-        className="inline-block text-primary text-sm hover:underline"
-      >
-        ← {strings.allPosts}
-      </Link>
+      <div className="border-t">
+        <PostList
+          posts={category.posts}
+          emptyMessage={strings.category.empty}
+          headingLevel="h2"
+        />
+      </div>
+      <BackLink />
     </div>
   );
 }
