@@ -46,4 +46,14 @@ describe("formatDateRange", () => {
       }),
     ).toBe("Jan 2019");
   });
+
+  it("shows a single month when the range starts and ends in the same month", () => {
+    expect(
+      formatDateRange({
+        startDate: "2021-10-01",
+        endDate: "2021-10-01",
+        isCurrent: false,
+      }),
+    ).toBe("Oct 2021");
+  });
 });

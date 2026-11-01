@@ -20,6 +20,10 @@ export const resolve: PresentationPluginOptions["resolve"] = {
       route: "/blog/:slug",
       filter: `_type == "post" && slug.current == $slug`,
     },
+    {
+      route: "/work/:slug",
+      filter: `_type == "project" && slug.current == $slug`,
+    },
   ]),
   locations: {
     settings: defineLocations({
@@ -53,6 +57,25 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     }),
     experience: defineLocations({
       locations: [{ title: "Work", href: routes.work }],
+    }),
+    credential: defineLocations({
+      locations: [{ title: "Work", href: routes.work }],
+    }),
+    project: defineLocations({
+      select: { title: "name", slug: "slug.current", gallery: "gallery" },
+      resolve: (doc) => ({
+        locations: [
+          ...(doc?.slug && doc.gallery?.length
+            ? [
+                {
+                  title: doc.title || "Untitled",
+                  href: routes.project(doc.slug),
+                },
+              ]
+            : []),
+          { title: "Work", href: routes.work },
+        ],
+      }),
     }),
   },
 };

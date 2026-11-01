@@ -56,6 +56,13 @@ export type BlockContent = Array<
     } & Code)
 >;
 
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
 export type Settings = {
   _id: string;
   _type: "settings";
@@ -77,12 +84,114 @@ export type Settings = {
     _type: "socialLink";
     _key: string;
   }>;
+  resume?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
   techStack?: Array<{
     name: string;
     category?: string;
     _type: "techStackItem";
     _key: string;
   }>;
+};
+
+export type Credential = {
+  _id: string;
+  _type: "credential";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  kind: "education" | "award" | "certificate" | "organization";
+  title: string;
+  issuer?: string;
+  period?: string;
+  description?: string;
+  url?: string;
+};
+
+export type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "category";
+};
+
+export type Project = {
+  _id: string;
+  _type: "project";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  tagline?: string;
+  status?: string;
+  startDate: string;
+  isOngoing?: boolean;
+  endDate?: string;
+  url?: string;
+  repositoryUrl?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  techStack?: Array<string>;
+  icon?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  gallery?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  }>;
+  category?: CategoryReference;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
 };
 
 export type Experience = {
@@ -125,22 +234,6 @@ export type Experience = {
   endDate?: string;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
-};
-
 export type Category = {
   _id: string;
   _type: "category";
@@ -152,24 +245,11 @@ export type Category = {
   description?: string;
 };
 
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
-};
-
 export type AuthorReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "author";
-};
-
-export type CategoryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "category";
 };
 
 export type Post = {
@@ -325,14 +405,17 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | BlockContent
+  | SanityFileAssetReference
   | Settings
-  | Experience
+  | Credential
+  | CategoryReference
+  | Project
   | SanityImageCrop
   | SanityImageHotspot
-  | Category
   | Slug
+  | Experience
+  | Category
   | AuthorReference
-  | CategoryReference
   | Post
   | Author
   | Code
@@ -472,7 +555,7 @@ export type PostSlugsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: workPageQuery
-// Query: {  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])}
+// Query: {  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {    _id,    role,    company,    url,    image,    description,    startDate,    endDate,    isCurrent  },  "projects": *[_type == "project"] | order(startDate desc) {    _id,    name,    "slug": slug.current,    tagline,    status,    startDate,    endDate,    isOngoing,    url,    repositoryUrl,    description,    techStack,    icon,    "hasPage": _type == "project" && defined(slug.current) && defined(gallery[0])  },  "credentials": *[_type == "credential"] | order(defined(period) desc, period desc) {    _id,    kind,    title,    issuer,    period,    description,    url  },  "resumeUrl": *[_type == "settings" && _id == "settings"][0].resume.asset->url,  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])}
 export type WorkPageQueryResult = {
   experiences: Array<{
     _id: string;
@@ -509,6 +592,56 @@ export type WorkPageQueryResult = {
     endDate: string | null;
     isCurrent: boolean | null;
   }>;
+  projects: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+    tagline: string | null;
+    status: string | null;
+    startDate: string;
+    endDate: string | null;
+    isOngoing: boolean | null;
+    url: string | null;
+    repositoryUrl: string | null;
+    description: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+    techStack: Array<string> | null;
+    icon: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    hasPage: false | true;
+  }>;
+  credentials: Array<{
+    _id: string;
+    kind: "award" | "certificate" | "education" | "organization";
+    title: string;
+    issuer: string | null;
+    period: string | null;
+    description: string | null;
+    url: string | null;
+  }>;
+  resumeUrl: string | null;
   techStack:
     | Array<{
         name: string;
@@ -516,6 +649,83 @@ export type WorkPageQueryResult = {
       }>
     | Array<never>;
 };
+
+// Source: sanity/lib/queries.ts
+// Variable: projectQuery
+// Query: *[_type == "project" && defined(slug.current) && defined(gallery[0]) && slug.current == $slug][0] {  _id,  name,  "slug": slug.current,  tagline,  status,  startDate,  endDate,  isOngoing,  url,  repositoryUrl,  description,  techStack,  icon,  gallery,  "updates": select(    defined(category) => *[_type == "post" && defined(slug.current) && references(^.category._ref)] | order(publishedAt desc) {        _id,  title,  "slug": slug.current,  excerpt,  publishedAt,  "categories": categories[]->{ title, "slug": slug.current }    },    []  )}
+export type ProjectQueryResult = {
+  _id: string;
+  name: string;
+  slug: string;
+  tagline: string | null;
+  status: string | null;
+  startDate: string;
+  endDate: string | null;
+  isOngoing: boolean | null;
+  url: string | null;
+  repositoryUrl: string | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal";
+    listItem?: "bullet";
+    markDefs?: Array<{
+      href: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  techStack: Array<string> | null;
+  icon: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  gallery: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+    _key: string;
+  }> | null;
+  updates:
+    | Array<{
+        _id: string;
+        title: string;
+        slug: string;
+        excerpt: string;
+        publishedAt: string;
+        categories: Array<{
+          title: string;
+          slug: string;
+        }> | null;
+      }>
+    | Array<never>;
+} | null;
+
+// Source: sanity/lib/queries.ts
+// Variable: projectSlugsQuery
+// Query: *[_type == "project" && defined(slug.current) && defined(gallery[0])] { "slug": slug.current }
+export type ProjectSlugsQueryResult = Array<{
+  slug: string;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: resumeQuery
+// Query: *[_type == "settings" && _id == "settings"][0].resume.asset->url
+export type ResumeQueryResult = string | null;
 
 // Source: sanity/lib/queries.ts
 // Variable: indexablePostsQuery
@@ -536,6 +746,14 @@ export type IndexableCategoriesQueryResult = Array<{
   updatedAt: string;
 }>;
 
+// Source: sanity/lib/queries.ts
+// Variable: indexableProjectsQuery
+// Query: *[_type == "project" && defined(slug.current) && defined(gallery[0])] {  "slug": slug.current,  "updatedAt": _updatedAt}
+export type IndexableProjectsQueryResult = Array<{
+  slug: string;
+  updatedAt: string;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -547,9 +765,13 @@ declare global {
     '*[_type == "category" && defined(slug.current)] { "slug": slug.current }': CategorySlugsQueryResult;
     '*[_type == "post" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  coverImage,\n  "author": author->{ name, image },\n  "categories": categories[]->{ title, "slug": slug.current },\n  body\n}': PostQueryResult;
     '*[_type == "post" && defined(slug.current)] { "slug": slug.current }': PostSlugsQueryResult;
-    '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
+    '{\n  "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {\n    _id,\n    role,\n    company,\n    url,\n    image,\n    description,\n    startDate,\n    endDate,\n    isCurrent\n  },\n  "projects": *[_type == "project"] | order(startDate desc) {\n    _id,\n    name,\n    "slug": slug.current,\n    tagline,\n    status,\n    startDate,\n    endDate,\n    isOngoing,\n    url,\n    repositoryUrl,\n    description,\n    techStack,\n    icon,\n    "hasPage": _type == "project" && defined(slug.current) && defined(gallery[0])\n  },\n  "credentials": *[_type == "credential"] | order(defined(period) desc, period desc) {\n    _id,\n    kind,\n    title,\n    issuer,\n    period,\n    description,\n    url\n  },\n  "resumeUrl": *[_type == "settings" && _id == "settings"][0].resume.asset->url,\n  "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])\n}': WorkPageQueryResult;
+    '*[_type == "project" && defined(slug.current) && defined(gallery[0]) && slug.current == $slug][0] {\n  _id,\n  name,\n  "slug": slug.current,\n  tagline,\n  status,\n  startDate,\n  endDate,\n  isOngoing,\n  url,\n  repositoryUrl,\n  description,\n  techStack,\n  icon,\n  gallery,\n  "updates": select(\n    defined(category) => *[_type == "post" && defined(slug.current) && references(^.category._ref)] | order(publishedAt desc) {\n      \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n    },\n    []\n  )\n}': ProjectQueryResult;
+    '*[_type == "project" && defined(slug.current) && defined(gallery[0])] { "slug": slug.current }': ProjectSlugsQueryResult;
+    '*[_type == "settings" && _id == "settings"][0].resume.asset->url': ResumeQueryResult;
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "updatedAt": _updatedAt\n}': IndexablePostsQueryResult;
     '*[_type == "category" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableCategoriesQueryResult;
+    '*[_type == "project" && defined(slug.current) && defined(gallery[0])] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableProjectsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

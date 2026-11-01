@@ -34,3 +34,22 @@ export function PostTitleTransition({
     </ViewTransition>
   );
 }
+
+/** A project name that morphs between the work page and the project page. */
+export function ProjectTitleTransition({
+  slug,
+  children,
+}: {
+  slug: string;
+  children: ReactNode;
+}) {
+  return (
+    <ViewTransition
+      name={`project-title-${slug}`}
+      share="title-morph"
+      default="none"
+    >
+      {children}
+    </ViewTransition>
+  );
+}

@@ -6,10 +6,14 @@ import {
   categorySlugsQuery,
   indexableCategoriesQuery,
   indexablePostsQuery,
+  indexableProjectsQuery,
   latestPostsQuery,
   postQuery,
   postSlugsQuery,
   postsQuery,
+  projectQuery,
+  projectSlugsQuery,
+  resumeQuery,
   settingsQuery,
   workPageQuery,
 } from "./queries";
@@ -262,11 +266,194 @@ describe("workPageQuery", () => {
     ]);
   });
 
+  it("lists projects newest first and marks the ones with their own page", async () => {
+    const work = await runQuery<{
+      projects: { name: string; hasPage: boolean }[];
+    }>(workPageQuery, {
+      documents: [
+        {
+          _id: "old",
+          _type: "project",
+          name: "Old",
+          slug: { current: "old" },
+          startDate: "2020-01-01",
+        },
+        {
+          _id: "new",
+          _type: "project",
+          name: "New",
+          slug: { current: "new" },
+          startDate: "2026-01-01",
+          gallery: [{ _type: "image", alt: "Screen" }],
+        },
+      ],
+    });
+    expect(
+      work.projects.map(({ name, hasPage }) => ({ name, hasPage })),
+    ).toEqual([
+      { name: "New", hasPage: true },
+      { name: "Old", hasPage: false },
+    ]);
+  });
+
+  it("returns the seed's sample project and credential", async () => {
+    const work = await runQuery<{
+      projects: { slug: string; techStack: string[] }[];
+      credentials: { kind: string; title: string; period: string }[];
+    }>(workPageQuery);
+    expect(work.projects).toMatchObject([
+      {
+        slug: "next-shadcn-sanity-blog",
+        techStack: ["Next.js", "Sanity", "Tailwind CSS", "shadcn/ui"],
+      },
+    ]);
+    expect(work.credentials).toMatchObject([
+      {
+        kind: "education",
+        title: "BSc Computer Science",
+        period: "2016 – 2020",
+      },
+    ]);
+  });
+
+  it("lists undated credentials after dated ones", async () => {
+    const work = await runQuery<{ credentials: { title: string }[] }>(
+      workPageQuery,
+      {
+        documents: [
+          {
+            _id: "a",
+            _type: "credential",
+            kind: "certificate",
+            title: "Undated",
+          },
+          {
+            _id: "b",
+            _type: "credential",
+            kind: "award",
+            title: "Dated",
+            period: "Mar 2021",
+          },
+        ],
+      },
+    );
+    expect(work.credentials.map((credential) => credential.title)).toEqual([
+      "Dated",
+      "Undated",
+    ]);
+  });
+
+  it("returns the resume URL from the settings file field", async () => {
+    const work = await runQuery<{ resumeUrl: string | null }>(workPageQuery, {
+      documents: resumeDocuments,
+    });
+    expect(work.resumeUrl).toBe("https://cdn.sanity.io/files/p/d/cv.pdf");
+  });
+
   it("returns empty lists when nothing has been added yet", async () => {
     expect(await runQuery(workPageQuery, { documents: [] })).toEqual({
       experiences: [],
+      projects: [],
+      credentials: [],
+      resumeUrl: null,
       techStack: [],
     });
+  });
+});
+
+/** A settings singleton with an uploaded resume, and the file asset it points to. */
+const resumeDocuments = [
+  {
+    _id: "settings",
+    _type: "settings",
+    title: "Site",
+    resume: {
+      _type: "file",
+      asset: { _type: "reference", _ref: "file-cv-pdf" },
+    },
+  },
+  {
+    _id: "file-cv-pdf",
+    _type: "sanity.fileAsset",
+    url: "https://cdn.sanity.io/files/p/d/cv.pdf",
+  },
+];
+
+describe("resumeQuery", () => {
+  it("returns the uploaded resume's URL", async () => {
+    expect(await runQuery(resumeQuery, { documents: resumeDocuments })).toBe(
+      "https://cdn.sanity.io/files/p/d/cv.pdf",
+    );
+  });
+
+  it("returns null when no resume is uploaded", async () => {
+    expect(await runQuery(resumeQuery)).toBeNull();
+  });
+});
+
+describe("projectQuery", () => {
+  it("returns the project with the posts in its updates category, newest first", async () => {
+    const project = await runQuery<{
+      name: string;
+      gallery: { alt: string }[];
+      updates: { slug: string }[];
+    }>(projectQuery, { params: { slug: "next-shadcn-sanity-blog" } });
+    expect(project.name).toBe("next-shadcn-sanity-blog");
+    expect(project.gallery).toMatchObject([
+      { alt: "The home page of the site" },
+    ]);
+    expect(project.updates.map((post) => post.slug)).toEqual([
+      "caching-with-use-cache",
+      "hello-world",
+    ]);
+  });
+
+  it("returns no updates when the project has no category", async () => {
+    const project = await runQuery<{ updates: unknown[] }>(projectQuery, {
+      params: { slug: "solo" },
+      documents: [
+        {
+          _id: "solo",
+          _type: "project",
+          name: "Solo",
+          slug: { current: "solo" },
+          gallery: [{ _type: "image", alt: "Screen" }],
+        },
+      ],
+    });
+    expect(project.updates).toEqual([]);
+  });
+
+  it("returns null for a project without a gallery, which has no page", async () => {
+    const project = await runQuery(projectQuery, {
+      params: { slug: "plain" },
+      documents: [
+        {
+          _id: "plain",
+          _type: "project",
+          name: "Plain",
+          slug: { current: "plain" },
+        },
+      ],
+    });
+    expect(project).toBeNull();
+  });
+});
+
+describe("projectSlugsQuery", () => {
+  it("lists only projects that have a page", async () => {
+    const slugs = await runQuery(projectSlugsQuery, {
+      documents: [
+        {
+          _id: "a",
+          _type: "project",
+          slug: { current: "with-gallery" },
+          gallery: [{ _type: "image" }],
+        },
+        { _id: "b", _type: "project", slug: { current: "without-gallery" } },
+      ],
+    });
+    expect(slugs).toEqual([{ slug: "with-gallery" }]);
   });
 });
 
@@ -337,6 +524,26 @@ describe("indexableCategoriesQuery", () => {
     });
     expect(categories).toEqual([
       { slug: "nextjs", updatedAt: "2026-05-01T00:00:00Z" },
+    ]);
+  });
+});
+
+describe("indexableProjectsQuery", () => {
+  it("lists project pages with their slug and last update", async () => {
+    const projects = await runQuery(indexableProjectsQuery, {
+      documents: [
+        {
+          _id: "a",
+          _type: "project",
+          slug: { current: "guessy" },
+          gallery: [{ _type: "image" }],
+          _updatedAt: "2026-08-30T00:00:00Z",
+        },
+        { _id: "b", _type: "project", slug: { current: "cv-only" } },
+      ],
+    });
+    expect(projects).toEqual([
+      { slug: "guessy", updatedAt: "2026-08-30T00:00:00Z" },
     ]);
   });
 });

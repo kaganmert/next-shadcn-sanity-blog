@@ -23,7 +23,7 @@ type DateRange = {
   isCurrent?: boolean | null;
 };
 
-/** "Jun 2021 – Feb 2024", or "Mar 2024 – Present" for the current role. */
+/** "Jun 2021 – Feb 2024", "Mar 2024 – Present" for a current role, or "Oct 2021" for a single month. */
 export function formatDateRange({
   startDate,
   endDate,
@@ -32,5 +32,6 @@ export function formatDateRange({
   const start = monthFormat.format(new Date(startDate));
   if (isCurrent) return `${start} – ${strings.work.present}`;
   if (!endDate) return start;
-  return `${start} – ${monthFormat.format(new Date(endDate))}`;
+  const end = monthFormat.format(new Date(endDate));
+  return end === start ? start : `${start} – ${end}`;
 }

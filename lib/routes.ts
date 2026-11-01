@@ -3,6 +3,8 @@ export const routes = {
   home: "/",
   blog: "/blog",
   work: "/work",
+  project: (slug: string) => `/work/${encodeURIComponent(slug)}`,
+  resume: "/cv.pdf",
   post: (slug: string) => `/blog/${encodeURIComponent(slug)}`,
   category: (slug: string) => `/blog/category/${encodeURIComponent(slug)}`,
   studio: "/studio",
