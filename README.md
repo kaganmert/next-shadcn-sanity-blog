@@ -1,8 +1,33 @@
 # next-shadcn-sanity-blog
 
-A personal blog and portfolio built with **Next.js 16**, **Sanity**, **Tailwind CSS v4** and **shadcn/ui**. It is minimal and typography-led, and it is easy to fork as a template: the site's name, navigation, links and tech stack all live in Sanity, not in code.
+**A calm, typography-led blog and portfolio template for Next.js 16 and Sanity.** Fast static pages that still update the moment you publish, an embedded Studio with Visual Editing, and a design built on _ma_ (間): space does the work.
 
-**Live:** [kaganmert.com](https://kaganmert.com). It is the author's own site, running this repo unchanged with real content.
+[![CI](https://github.com/kaganmert/next-shadcn-sanity-blog/actions/workflows/ci.yml/badge.svg)](https://github.com/kaganmert/next-shadcn-sanity-blog/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](./LICENSE)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)](https://nextjs.org)
+[![Sanity](https://img.shields.io/badge/Sanity-v6-f03e2f?logo=sanity)](https://www.sanity.io)
+
+[**Live demo →**](https://kaganmert.com) · [**Deploy with Vercel →**](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkaganmert%2Fnext-shadcn-sanity-blog&env=NEXT_PUBLIC_SANITY_PROJECT_ID,NEXT_PUBLIC_SANITY_DATASET,SANITY_API_READ_TOKEN&envDescription=Your%20Sanity%20project%20ID%2C%20dataset%20and%20a%20viewer%20token&envLink=https%3A%2F%2Fgithub.com%2Fkaganmert%2Fnext-shadcn-sanity-blog%23local-setup&project-name=my-blog&repository-name=my-blog) · [Customize in 5 minutes](#customize-in-5-minutes)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/home-dark.png">
+  <img alt="The home page: a large serif name, a short intro, a year of GitHub contributions drawn in ink, and the latest posts" src="./docs/images/home-light.png">
+</picture>
+
+## Features
+
+- **Static and live at once.** Next.js 16 Cache Components prerender every page; Sanity Live revalidates only what changed when you publish. No redeploys.
+- **Edit in place.** The Studio lives at `/studio`, with the Presentation tool, click-to-edit overlays and draft previews.
+- **Motion with a reason.** Post and project titles morph into their page, routes crossfade with React View Transitions, and the theme fades from paper to ink. Reduced motion keeps only the fades.
+- **A real portfolio.** Experience timeline, projects with galleries and update posts, education and awards, a CV download at `/cv.pdf`, and standalone pages like `/privacy`.
+- **GitHub contributions.** A year of contributions on the home page as a server-rendered SVG, with GitHub-style day tooltips.
+- **Writing that reads well.** Mincho headings, Newsreader body text, server-highlighted code (no highlighter JavaScript), heading anchors.
+- **SEO built in.** Metadata, generated OG images, sitemap, robots and an RSS feed.
+- **Yours in minutes.** Every name, link and piece of copy lives in Sanity or `lib/strings.ts`, and one color token sets the accent.
+
+<p align="center">
+  <img alt="A post title morphing from the list into the article heading, then the theme switching from light to dark" src="./docs/images/transitions.gif" width="800">
+</p>
 
 ## Stack
 
@@ -17,15 +42,18 @@ A personal blog and portfolio built with **Next.js 16**, **Sanity**, **Tailwind 
 
 ## Routes
 
-| Route                                     | What it shows                                             |
-| ----------------------------------------- | --------------------------------------------------------- |
-| `/`                                       | Intro from Settings and the latest posts                  |
-| `/blog`                                   | All posts, newest first, with category links              |
-| `/blog/[slug]`                            | A post: Portable Text body, code blocks, cover and author |
-| `/blog/category/[slug]`                   | Posts in one category                                     |
-| `/work`                                   | Experience timeline and tech stack                        |
-| `/studio`                                 | Embedded Sanity Studio                                    |
-| `/rss.xml`, `/sitemap.xml`, `/robots.txt` | Feed and SEO files                                        |
+| Route                                     | What it shows                                                         |
+| ----------------------------------------- | --------------------------------------------------------------------- |
+| `/`                                       | Intro from Settings, GitHub contributions and the latest posts        |
+| `/blog`                                   | All posts, newest first, with category links                          |
+| `/blog/[slug]`                            | A post: Portable Text body, code blocks, cover and author             |
+| `/blog/category/[slug]`                   | Posts in one category                                                 |
+| `/work`                                   | Experience, projects, education, awards, organizations and tech stack |
+| `/work/[slug]`                            | A project with a gallery: story, screenshots, links and update posts  |
+| `/[slug]`                                 | A standalone page, such as `/privacy` or `/support`                   |
+| `/cv.pdf`                                 | Redirects to the resume uploaded in Settings                          |
+| `/studio`                                 | Embedded Sanity Studio                                                |
+| `/rss.xml`, `/sitemap.xml`, `/robots.txt` | Feed and SEO files                                                    |
 
 ## Local setup
 
@@ -96,13 +124,17 @@ CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on every p
 | `NEXT_PUBLIC_SANITY_DATASET`    | `.env.local`, Vercel, CI vars | Public, usually `production`                                     |
 | `SANITY_API_READ_TOKEN`         | `.env.local`, Vercel (secret) | Viewer token, server-only; enables draft mode and Visual Editing |
 | `NEXT_PUBLIC_SITE_URL`          | Optional                      | Canonical URL; on Vercel it defaults to the production domain    |
+| `GITHUB_TOKEN`                  | Optional, server-only         | Shows GitHub contributions on the home page (see below)          |
 
 `.env.example` lists the same variables. The build never needs the token, so CI only sets the two public values (as repository variables).
 
 ## Content model
 
-- `settings` (singleton): site name, description, home intro, navigation, social links, tech stack
+- `settings` (singleton): site name, description, home intro, navigation, social links, GitHub username, resume PDF, tech stack
 - `post`: title, slug, excerpt, cover image, author, categories, published date, Portable Text body
+- `project`: name, dates, status, description, tech stack, links, icon, gallery and an updates category
+- `credential`: education, awards, certificates and organizations
+- `page`: a standalone page at `/[slug]`
 - `category`, `author`, `experience`
 
 Schemas live in `sanity/schemaTypes`, and GROQ queries live in `sanity/lib/queries.ts`. Every query uses `defineQuery`, and TypeGen types them. Run `pnpm typegen` after changing either.
@@ -119,12 +151,19 @@ Schemas live in `sanity/schemaTypes`, and GROQ queries live in `sanity/lib/queri
 3. Add your Vercel domains to Sanity CORS with credentials, for example `https://your-app.vercel.app` and `https://your-app-*-your-team.vercel.app` for previews.
 4. Optionally, turn on Web Analytics and Speed Insights for the project. The components are already in the site layout.
 
-## Forking as a template
+## Customize in 5 minutes
 
-1. Create your own Sanity project and follow **Local setup**.
-2. Edit **Settings** in the Studio: site name, description, intro, navigation, social links and tech stack.
-3. Translate or rewrite UI strings in `lib/strings.ts`. Every string that isn't content lives there.
-4. Change the accent color with `--primary` (light and dark) in `app/globals.css`. shadcn's `--accent` is only a neutral hover surface.
+Everything personal lives in Sanity or in one of three files, so making the template yours is mostly editing, not coding.
+
+1. **Identity and copy.** In the Studio, open **Settings**: site name, description, home intro, navigation, social links, tech stack, GitHub username and resume. Then add your experience, projects and posts.
+2. **Accent color.** Change `--primary` in `app/globals.css` (one value for light, one for dark). It is the only accent: the seal, link underlines, focus rings and small markers.
+3. **Typefaces.** Swap the `next/font` imports in `app/layout.tsx`. `--font-mincho` sets headings, `--font-newsreader` sets reading text, and Geist sets the UI.
+4. **UI strings.** Translate or rewrite them in `lib/strings.ts`. Every string that isn't content lives there.
+5. **The seal.** Change the character in `components/seal.tsx`.
+
+### GitHub contributions
+
+Set **GitHub username** in Settings, and add `GITHUB_TOKEN` to `.env.local` and Vercel. A [fine-grained token](https://github.com/settings/personal-access-tokens/new) with no permissions is enough, because it only reads public data. Without either value, the graph doesn't render.
 
 ## License
 
