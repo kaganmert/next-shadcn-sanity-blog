@@ -2,13 +2,15 @@
 
 A personal blog and portfolio built with **Next.js 16**, **Sanity**, **Tailwind CSS v4** and **shadcn/ui**. It is minimal and typography-led, and it is easy to fork as a template: the site's name, navigation, links and tech stack all live in Sanity, not in code.
 
+**Live:** [next-shadcn-sanity-blog.vercel.app](https://next-shadcn-sanity-blog.vercel.app). It is the author's own site, running this repo unchanged with real content.
+
 ## Stack
 
 | Area        | Choice                                                                        |
 | ----------- | ----------------------------------------------------------------------------- |
 | Framework   | Next.js 16 (App Router, Cache Components, Partial Prefetching), React 19      |
 | Content     | Sanity with an embedded Studio at `/studio`, Live Content API, Visual Editing |
-| Styling     | Tailwind CSS v4, shadcn/ui, Geist Sans and Mono, `@tailwindcss/typography`    |
+| Styling     | Tailwind CSS v4, shadcn/ui, Shippori Mincho, Newsreader, Geist Sans and Mono  |
 | Code blocks | Shiki, highlighted on the server (no highlighter JavaScript in the browser)   |
 | Tooling     | pnpm, Node.js 24, TypeScript, Biome, Vitest, Sanity TypeGen                   |
 | Hosting     | Vercel, with Web Analytics and Speed Insights                                 |

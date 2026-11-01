@@ -1,4 +1,4 @@
-import { PortableText } from "@portabletext/react";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { cn } from "cn";
 import type { Metadata } from "next";
 import { PageTransition } from "@/components/page-transition";
@@ -103,6 +103,43 @@ async function Work({ fetchOptions }: { fetchOptions: FetchOptions }) {
   );
 }
 
+const linkClass =
+  "text-foreground underline decoration-primary/45 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-primary";
+
+/** Role descriptions: short paragraphs and bullets, with small vermilion markers like the post body. */
+const descriptionComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p className="mt-2 first:mt-0">{children}</p>,
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="mt-2 space-y-1.5 first:mt-0">{children}</ul>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => (
+      <li className="relative pl-4 before:absolute before:top-[0.72em] before:left-0 before:size-1 before:rounded-full before:bg-primary/70">
+        {children}
+      </li>
+    ),
+  },
+  marks: {
+    strong: ({ children }) => (
+      <strong className="font-medium text-foreground">{children}</strong>
+    ),
+    link: ({ children, value }) => (
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={linkClass}
+      >
+        {children}
+      </a>
+    ),
+  },
+};
+
 function ExperienceItem({ experience }: { experience: Experience }) {
   return (
     <article className="space-y-2">
@@ -121,10 +158,7 @@ function ExperienceItem({ experience }: { experience: Experience }) {
       </div>
       <p className="text-muted-foreground text-sm">
         {experience.url ? (
-          <a
-            href={experience.url}
-            className="text-foreground underline decoration-primary/45 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-150 hover:decoration-primary"
-          >
+          <a href={experience.url} className={linkClass}>
             {experience.company}
           </a>
         ) : (
@@ -133,7 +167,10 @@ function ExperienceItem({ experience }: { experience: Experience }) {
       </p>
       {experience.description?.length ? (
         <div className="max-w-[36rem] pt-1 font-serif text-[1.05rem] text-muted-foreground leading-relaxed">
-          <PortableText value={experience.description} />
+          <PortableText
+            value={experience.description}
+            components={descriptionComponents}
+          />
         </div>
       ) : null}
     </article>

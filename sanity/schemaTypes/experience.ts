@@ -1,6 +1,6 @@
 import { BriefcaseIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageWithAlt } from "./fields";
+import { imageWithAlt, linkSchemes } from "./fields";
 
 export const experience = defineType({
   name: "experience",
@@ -30,6 +30,29 @@ export const experience = defineType({
         defineArrayMember({
           type: "block",
           styles: [{ title: "Normal", value: "normal" }],
+          lists: [{ title: "Bullet", value: "bullet" }],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+            annotations: [
+              defineArrayMember({
+                name: "link",
+                title: "Link",
+                type: "object",
+                fields: [
+                  defineField({
+                    name: "href",
+                    title: "URL",
+                    type: "url",
+                    validation: (rule) =>
+                      rule.required().uri({ scheme: linkSchemes }),
+                  }),
+                ],
+              }),
+            ],
+          },
         }),
       ],
     }),
