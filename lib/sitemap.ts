@@ -5,17 +5,19 @@ import { absoluteUrl } from "@/lib/site-url";
 type Dated = { slug: string; updatedAt: string };
 
 /**
- * Sitemap entries: the static pages, every post and every category, with
+ * Sitemap entries: the static pages, every post, category and project page, with
  * absolute URLs. Home and blog are dated by the most recently updated post.
  */
 export function buildSitemap({
   siteUrl,
   posts,
   categories,
+  projects,
 }: {
   siteUrl: string;
   posts: Dated[];
   categories: Dated[];
+  projects: Dated[];
 }): MetadataRoute.Sitemap {
   const latestPost = posts
     .map((post) => post.updatedAt)
@@ -35,6 +37,10 @@ export function buildSitemap({
     ...categories.map((category) => ({
       url: absoluteUrl(routes.category(category.slug), siteUrl),
       lastModified: category.updatedAt,
+    })),
+    ...projects.map((project) => ({
+      url: absoluteUrl(routes.project(project.slug), siteUrl),
+      lastModified: project.updatedAt,
     })),
   ];
 }

@@ -86,6 +86,14 @@ export const settings = defineType({
       ],
     }),
     defineField({
+      name: "resume",
+      title: "Resume (PDF)",
+      description:
+        "Linked as “Download CV” on the work page and served at /cv.pdf. Leave empty to hide both.",
+      type: "file",
+      options: { accept: "application/pdf" },
+    }),
+    defineField({
       name: "techStack",
       title: "Tech stack",
       type: "array",

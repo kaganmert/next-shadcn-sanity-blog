@@ -1,6 +1,6 @@
 import { BriefcaseIcon } from "lucide-react";
-import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageWithAlt, linkSchemes } from "./fields";
+import { defineField, defineType } from "sanity";
+import { endDateField, imageWithAlt, shortRichTextField } from "./fields";
 
 export const experience = defineType({
   name: "experience",
@@ -22,40 +22,7 @@ export const experience = defineType({
     }),
     defineField({ name: "url", title: "Company URL", type: "url" }),
     imageWithAlt({ name: "image", title: "Logo" }),
-    defineField({
-      name: "description",
-      title: "Description",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "block",
-          styles: [{ title: "Normal", value: "normal" }],
-          lists: [{ title: "Bullet", value: "bullet" }],
-          marks: {
-            decorators: [
-              { title: "Strong", value: "strong" },
-              { title: "Emphasis", value: "em" },
-            ],
-            annotations: [
-              defineArrayMember({
-                name: "link",
-                title: "Link",
-                type: "object",
-                fields: [
-                  defineField({
-                    name: "href",
-                    title: "URL",
-                    type: "url",
-                    validation: (rule) =>
-                      rule.required().uri({ scheme: linkSchemes }),
-                  }),
-                ],
-              }),
-            ],
-          },
-        }),
-      ],
-    }),
+    shortRichTextField({ name: "description", title: "Description" }),
     defineField({
       name: "startDate",
       title: "Start date",
@@ -68,24 +35,7 @@ export const experience = defineType({
       type: "boolean",
       initialValue: false,
     }),
-    defineField({
-      name: "endDate",
-      title: "End date",
-      type: "date",
-      hidden: ({ parent }) => Boolean(parent?.isCurrent),
-      validation: (rule) =>
-        rule.custom((endDate, context) => {
-          const parent = context.parent as
-            | { isCurrent?: boolean; startDate?: string }
-            | undefined;
-          if (parent?.isCurrent) return true;
-          if (!endDate)
-            return "End date is required unless this is the current role";
-          if (parent?.startDate && endDate < parent.startDate)
-            return "End date must be after the start date";
-          return true;
-        }),
-    }),
+    endDateField({ ongoingField: "isCurrent" }),
   ],
   orderings: [
     {

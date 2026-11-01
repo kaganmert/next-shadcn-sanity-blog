@@ -78,7 +78,13 @@ export const postSlugsQuery = defineQuery(
   `*[${isListedPost}] { "slug": slug.current }`,
 );
 
-/** The work page: experiences (current role first, then newest start date) and the tech stack. */
+/** A project that has its own page: a slug and at least one gallery image. */
+const hasProjectPage = /* groq */ `_type == "project" && defined(slug.current) && defined(gallery[0])`;
+
+/**
+ * The work page: experiences (current role first, then newest start date),
+ * projects (newest first), credentials, the resume file and the tech stack.
+ */
 export const workPageQuery = defineQuery(`{
   "experiences": *[_type == "experience"] | order(coalesce(isCurrent, false) desc, startDate desc) {
     _id,
@@ -91,8 +97,69 @@ export const workPageQuery = defineQuery(`{
     endDate,
     isCurrent
   },
+  "projects": *[_type == "project"] | order(startDate desc) {
+    _id,
+    name,
+    "slug": slug.current,
+    tagline,
+    status,
+    startDate,
+    endDate,
+    isOngoing,
+    url,
+    repositoryUrl,
+    description,
+    techStack,
+    icon,
+    "hasPage": ${hasProjectPage}
+  },
+  "credentials": *[_type == "credential"] | order(defined(period) desc, period desc) {
+    _id,
+    kind,
+    title,
+    issuer,
+    period,
+    description,
+    url
+  },
+  "resumeUrl": *[_type == "settings" && _id == "settings"][0].resume.asset->url,
   "techStack": coalesce(*[_type == "settings" && _id == "settings"][0].techStack[]{ name, category }, [])
 }`);
+
+/** Everything a project page renders, with its updates; null unless the project has a page. */
+export const projectQuery =
+  defineQuery(`*[${hasProjectPage} && slug.current == $slug][0] {
+  _id,
+  name,
+  "slug": slug.current,
+  tagline,
+  status,
+  startDate,
+  endDate,
+  isOngoing,
+  url,
+  repositoryUrl,
+  description,
+  techStack,
+  icon,
+  gallery,
+  "updates": select(
+    defined(category) => *[${isListedPost} && references(^.category._ref)] | order(publishedAt desc) {
+      ${postSummaryFields}
+    },
+    []
+  )
+}`);
+
+/** Route params for every project page. */
+export const projectSlugsQuery = defineQuery(
+  `*[${hasProjectPage}] { "slug": slug.current }`,
+);
+
+/** The uploaded resume's file URL, or null. */
+export const resumeQuery = defineQuery(
+  `*[_type == "settings" && _id == "settings"][0].resume.asset->url`,
+);
 
 /** Posts that search engines and feed readers should see (sitemap, RSS), newest first. */
 export const indexablePostsQuery =
@@ -107,6 +174,12 @@ export const indexablePostsQuery =
 /** Categories that search engines should see (sitemap). */
 export const indexableCategoriesQuery =
   defineQuery(`*[_type == "category" && defined(slug.current)] {
+  "slug": slug.current,
+  "updatedAt": _updatedAt
+}`);
+
+/** Project pages that search engines should see (sitemap). */
+export const indexableProjectsQuery = defineQuery(`*[${hasProjectPage}] {
   "slug": slug.current,
   "updatedAt": _updatedAt
 }`);

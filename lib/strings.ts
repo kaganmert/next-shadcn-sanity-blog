@@ -26,10 +26,23 @@ export const strings = {
   work: {
     title: "Work",
     experience: "Experience",
+    projects: "Projects",
+    education: "Education",
+    awardsAndCertificates: "Awards & certificates",
+    organizations: "Organizations",
+    downloadCv: "Download CV",
     techStack: "Tech stack",
     present: "Present",
     otherTech: "Other",
     empty: "No experience added yet.",
+  },
+  project: {
+    eyebrow: "Project",
+    visit: "Visit",
+    repository: "Repository",
+    gallery: "Gallery",
+    updates: "Updates",
+    backToWork: "Work",
   },
   category: {
     eyebrow: "Category",
