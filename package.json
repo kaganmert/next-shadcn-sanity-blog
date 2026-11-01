@@ -12,6 +12,7 @@
   },
   "packageManager": "pnpm@11.23.0",
   "scripts": {
+    "bootstrap": "node scripts/bootstrap.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
