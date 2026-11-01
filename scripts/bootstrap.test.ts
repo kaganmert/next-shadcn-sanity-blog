@@ -41,6 +41,17 @@ SANITY_API_READ_TOKEN=sk_secret
 `);
   });
 
+  it("reports which empty values it filled", () => {
+    const { filled, added, updated } = mergeEnvFile(example, {
+      NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123",
+    });
+    expect({ filled, added, updated }).toEqual({
+      filled: ["NEXT_PUBLIC_SANITY_PROJECT_ID"],
+      added: [],
+      updated: [],
+    });
+  });
+
   it("appends keys the file doesn't have yet", () => {
     const { text, added } = mergeEnvFile("A=1\n", { B: "2" });
     expect(text).toBe("A=1\nB=2\n");

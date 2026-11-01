@@ -53,6 +53,7 @@ export function mergeEnvFile(
 ) {
   const pending = new Map(Object.entries(updates));
   const kept: string[] = [];
+  const filled: string[] = [];
   const updated: string[] = [];
 
   const lines = (text === "" ? [] : text.replace(/\n$/, "").split("\n")).map(
@@ -68,7 +69,7 @@ export function mergeEnvFile(
         kept.push(key);
         return line;
       }
-      if (current !== "") updated.push(key);
+      (current === "" ? filled : updated).push(key);
       return `${key}=${formatValue(next)}`;
     },
   );
@@ -77,7 +78,7 @@ export function mergeEnvFile(
   for (const [key, value] of pending)
     lines.push(`${key}=${formatValue(value)}`);
 
-  return { text: `${lines.join("\n")}\n`, added, kept, updated };
+  return { text: `${lines.join("\n")}\n`, added, filled, kept, updated };
 }
 
 // ---------------------------------------------------------------------------
@@ -125,20 +126,6 @@ function fail(message: string, detail?: string): never {
 
 async function main() {
   const yes = process.argv.includes("--yes");
-  const rl = createInterface({ input: stdin, output: stdout });
-  const ask = async (question: string, fallback: string) => {
-    if (yes) return fallback;
-    const answer = (await rl.question(`  ${question} `)).trim();
-    return answer || fallback;
-  };
-  const confirm = async (question: string, fallback: boolean) =>
-    /^y/i.test(
-      await ask(
-        `${question} ${fallback ? "[Y/n]" : "[y/N]"}`,
-        fallback ? "y" : "n",
-      ),
-    );
-
   console.log("next-shadcn-sanity-blog: project setup");
 
   const envText = existsSync(ENV_FILE)
@@ -155,6 +142,41 @@ async function main() {
     if (!sanity(["login"], { inherit: true }).ok) fail("Sanity login failed.");
   }
   done("Logged in");
+
+  // Answers are read line by line, so piped input works too. Created after the
+  // login, which needs the terminal to itself. When input ends, every
+  // remaining question takes its default.
+  const lineReader = createInterface({ input: stdin });
+  const buffered: string[] = [];
+  const waiting: Array<(line: string | null) => void> = [];
+  let inputClosed = false;
+  lineReader.on("line", (line) => {
+    const resolve = waiting.shift();
+    if (resolve) resolve(line);
+    else buffered.push(line);
+  });
+  lineReader.on("close", () => {
+    inputClosed = true;
+    for (const resolve of waiting.splice(0)) resolve(null);
+  });
+  const ask = async (question: string, fallback: string) => {
+    if (yes) return fallback;
+    stdout.write(`  ${question} `);
+    const line =
+      buffered.shift() ??
+      (inputClosed
+        ? null
+        : await new Promise<string | null>((resolve) => waiting.push(resolve)));
+    if (line === null) stdout.write("\n");
+    return line?.trim() || fallback;
+  };
+  const confirm = async (question: string, fallback: boolean) =>
+    /^y/i.test(
+      await ask(
+        `${question} ${fallback ? "[Y/n]" : "[y/N]"}`,
+        fallback ? "y" : "n",
+      ),
+    );
 
   // 2. Project and dataset.
   step("Sanity project");
@@ -255,9 +277,13 @@ async function main() {
   writeFileSync(ENV_FILE, merged.text);
   done(
     [
+      merged.filled.length && `set ${merged.filled.join(", ")}`,
       merged.added.length && `added ${merged.added.join(", ")}`,
       merged.updated.length && `updated ${merged.updated.join(", ")}`,
-      !merged.added.length && !merged.updated.length && "nothing to change",
+      !merged.filled.length &&
+        !merged.added.length &&
+        !merged.updated.length &&
+        "nothing to change",
     ]
       .filter(Boolean)
       .join("; "),
@@ -288,7 +314,7 @@ async function main() {
     done("Skipped");
   }
 
-  rl.close();
+  lineReader.close();
   console.log(
     `\nAll set. Run \`pnpm dev\`: the site is on ${LOCAL_ORIGIN} and the Studio on ${LOCAL_ORIGIN}/studio.`,
   );
