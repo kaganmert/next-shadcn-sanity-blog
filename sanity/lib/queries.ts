@@ -183,3 +183,27 @@ export const indexableProjectsQuery = defineQuery(`*[${hasProjectPage}] {
   "slug": slug.current,
   "updatedAt": _updatedAt
 }`);
+
+/** A standalone page that can be linked to: it has a slug. */
+const isListedPage = /* groq */ `_type == "page" && defined(slug.current)`;
+
+/** Everything a standalone page renders; null if the slug is unknown. */
+export const pageQuery =
+  defineQuery(`*[${isListedPage} && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  body
+}`);
+
+/** Route params for every standalone page. */
+export const pageSlugsQuery = defineQuery(
+  `*[${isListedPage}] { "slug": slug.current }`,
+);
+
+/** Standalone pages that search engines should see (sitemap). */
+export const indexablePagesQuery = defineQuery(`*[${isListedPage}] {
+  "slug": slug.current,
+  "updatedAt": _updatedAt
+}`);

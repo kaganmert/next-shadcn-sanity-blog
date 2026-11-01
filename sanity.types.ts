@@ -97,6 +97,24 @@ export type Settings = {
   }>;
 };
 
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  description?: string;
+  body?: BlockContent;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
+};
+
 export type Credential = {
   _id: string;
   _type: "credential";
@@ -186,12 +204,6 @@ export type SanityImageHotspot = {
   y: number;
   height: number;
   width: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
 };
 
 export type Experience = {
@@ -407,12 +419,13 @@ export type AllSanitySchemaTypes =
   | BlockContent
   | SanityFileAssetReference
   | Settings
+  | Page
+  | Slug
   | Credential
   | CategoryReference
   | Project
   | SanityImageCrop
   | SanityImageHotspot
-  | Slug
   | Experience
   | Category
   | AuthorReference
@@ -754,6 +767,32 @@ export type IndexableProjectsQueryResult = Array<{
   updatedAt: string;
 }>;
 
+// Source: sanity/lib/queries.ts
+// Variable: pageQuery
+// Query: *[_type == "page" && defined(slug.current) && slug.current == $slug][0] {  _id,  title,  "slug": slug.current,  description,  body}
+export type PageQueryResult = {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  body: BlockContent | null;
+} | null;
+
+// Source: sanity/lib/queries.ts
+// Variable: pageSlugsQuery
+// Query: *[_type == "page" && defined(slug.current)] { "slug": slug.current }
+export type PageSlugsQueryResult = Array<{
+  slug: string;
+}>;
+
+// Source: sanity/lib/queries.ts
+// Variable: indexablePagesQuery
+// Query: *[_type == "page" && defined(slug.current)] {  "slug": slug.current,  "updatedAt": _updatedAt}
+export type IndexablePagesQueryResult = Array<{
+  slug: string;
+  updatedAt: string;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -772,6 +811,9 @@ declare global {
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "updatedAt": _updatedAt\n}': IndexablePostsQueryResult;
     '*[_type == "category" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableCategoriesQueryResult;
     '*[_type == "project" && defined(slug.current) && defined(gallery[0])] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexableProjectsQueryResult;
+    '*[_type == "page" && defined(slug.current) && slug.current == $slug][0] {\n  _id,\n  title,\n  "slug": slug.current,\n  description,\n  body\n}': PageQueryResult;
+    '*[_type == "page" && defined(slug.current)] { "slug": slug.current }': PageSlugsQueryResult;
+    '*[_type == "page" && defined(slug.current)] {\n  "slug": slug.current,\n  "updatedAt": _updatedAt\n}': IndexablePagesQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

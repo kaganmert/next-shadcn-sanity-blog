@@ -5,9 +5,12 @@ import {
   categoryPageQuery,
   categorySlugsQuery,
   indexableCategoriesQuery,
+  indexablePagesQuery,
   indexablePostsQuery,
   indexableProjectsQuery,
   latestPostsQuery,
+  pageQuery,
+  pageSlugsQuery,
   postQuery,
   postSlugsQuery,
   postsQuery,
@@ -544,6 +547,52 @@ describe("indexableProjectsQuery", () => {
     });
     expect(projects).toEqual([
       { slug: "guessy", updatedAt: "2026-08-30T00:00:00Z" },
+    ]);
+  });
+});
+
+describe("pageQuery", () => {
+  it("returns the seed's sample page by slug", async () => {
+    const page = await runQuery<{ title: string; body: unknown[] }>(pageQuery, {
+      params: { slug: "about" },
+    });
+    expect(page).toMatchObject({ title: "About", slug: "about" });
+    expect(page.body).toHaveLength(2);
+  });
+
+  it("returns null for an unknown slug", async () => {
+    expect(
+      await runQuery(pageQuery, { params: { slug: "missing" } }),
+    ).toBeNull();
+  });
+});
+
+describe("pageSlugsQuery", () => {
+  it("lists pages that have a slug", async () => {
+    const slugs = await runQuery(pageSlugsQuery, {
+      documents: [
+        { _id: "a", _type: "page", slug: { current: "privacy" } },
+        { _id: "b", _type: "page", title: "No slug yet" },
+      ],
+    });
+    expect(slugs).toEqual([{ slug: "privacy" }]);
+  });
+});
+
+describe("indexablePagesQuery", () => {
+  it("lists pages with their slug and last update", async () => {
+    const pages = await runQuery(indexablePagesQuery, {
+      documents: [
+        {
+          _id: "a",
+          _type: "page",
+          slug: { current: "support" },
+          _updatedAt: "2026-09-06T00:00:00Z",
+        },
+      ],
+    });
+    expect(pages).toEqual([
+      { slug: "support", updatedAt: "2026-09-06T00:00:00Z" },
     ]);
   });
 });

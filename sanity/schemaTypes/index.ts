@@ -4,6 +4,7 @@ import { blockContent } from "./blockContent";
 import { category } from "./category";
 import { credential } from "./credential";
 import { experience } from "./experience";
+import { page } from "./page";
 import { post } from "./post";
 import { project } from "./project";
 import { settings } from "./settings";
@@ -15,6 +16,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   experience,
   project,
   credential,
+  page,
   settings,
   blockContent,
 ];

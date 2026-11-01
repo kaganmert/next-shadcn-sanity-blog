@@ -24,6 +24,11 @@ export const resolve: PresentationPluginOptions["resolve"] = {
       route: "/work/:slug",
       filter: `_type == "project" && slug.current == $slug`,
     },
+    // Last: it matches any single segment, so the more specific routes go first.
+    {
+      route: "/:slug",
+      filter: `_type == "page" && slug.current == $slug`,
+    },
   ]),
   locations: {
     settings: defineLocations({
@@ -57,6 +62,14 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     }),
     experience: defineLocations({
       locations: [{ title: "Work", href: routes.work }],
+    }),
+    page: defineLocations({
+      select: { title: "title", slug: "slug.current" },
+      resolve: (doc) => ({
+        locations: doc?.slug
+          ? [{ title: doc.title || "Untitled", href: routes.page(doc.slug) }]
+          : [],
+      }),
     }),
     credential: defineLocations({
       locations: [{ title: "Work", href: routes.work }],

@@ -280,6 +280,10 @@ html[data-theme-transition]::view-transition-new(root) {
 .prose :where(h2) {
   margin-top: 3em;
 }
+/* A body that opens with a heading starts right under the rule above it. */
+.prose > :first-child {
+  margin-top: 0;
+}
 .prose :where(a):not(.heading-anchor) {
   font-weight: inherit;
   text-decoration-line: underline;
