@@ -44,6 +44,15 @@ export const strings = {
     updates: "Updates",
     backToWork: "Work",
   },
+  github: {
+    /** "1,234 contributions in the last year". */
+    summary: (total: number) =>
+      `${new Intl.NumberFormat("en-US").format(total)} ${total === 1 ? "contribution" : "contributions"} in the last year`,
+    /** One cell's tooltip: "3 contributions on Oct 20, 2026". */
+    day: (count: number, date: string) =>
+      `${count === 0 ? "No" : count} ${count === 1 ? "contribution" : "contributions"} on ${date}`,
+    profile: "GitHub",
+  },
   category: {
     eyebrow: "Category",
     empty: "No posts in this category yet.",

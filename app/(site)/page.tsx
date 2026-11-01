@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContributionGraph } from "@/components/contribution-graph";
 import { PageTransition } from "@/components/page-transition";
 import { PostList } from "@/components/post-list";
 import { SectionHeading } from "@/components/section-heading";
@@ -46,6 +47,11 @@ async function Home({ fetchOptions }: { fetchOptions: FetchOptions }) {
         >
           {settings?.intro ?? strings.home.intro}
         </p>
+        <ContributionGraph
+          username={settings?.githubUsername}
+          className="ink-rise mt-14"
+          style={stagger(2)}
+        />
       </section>
       <section aria-labelledby="latest-posts" className="space-y-4">
         <SectionHeading

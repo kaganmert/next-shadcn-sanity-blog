@@ -86,6 +86,17 @@ export const settings = defineType({
       ],
     }),
     defineField({
+      name: "githubUsername",
+      title: "GitHub username",
+      description:
+        "Shows your GitHub contributions on the home page. Also needs a GITHUB_TOKEN environment variable; leave empty to hide.",
+      type: "string",
+      validation: (rule) =>
+        rule.regex(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i, {
+          name: "GitHub username",
+        }),
+    }),
+    defineField({
       name: "resume",
       title: "Resume (PDF)",
       description:
