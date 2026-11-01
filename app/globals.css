@@ -7,7 +7,10 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  /* Mincho for headings and the site mark; Newsreader for long-form reading. */
+  --font-heading: var(--font-mincho);
+  --font-display: var(--font-mincho);
+  --font-serif: var(--font-newsreader);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -32,59 +35,75 @@
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 /*
- * Design tokens. The palette is neutral; `--primary` is the single accent
- * color (links, focus rings, highlights). shadcn's `--accent` stays a neutral
- * hover surface.
+ * Design language: ma (間) and yohaku (余白). Space does the work.
+ *
+ * Three roles only: washi paper (background), sumi ink (text in two
+ * strengths) and a single shu vermilion (朱) used sparingly for the seal,
+ * link underlines, focus rings and small markers. Never for large surfaces.
  */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.18 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0 0);
-  --primary: oklch(0.52 0.17 256);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: oklch(0.975 0.007 85);
+  --foreground: oklch(0.24 0.012 60);
+  --card: oklch(0.985 0.006 85);
+  --card-foreground: oklch(0.24 0.012 60);
+  --popover: oklch(0.985 0.006 85);
+  --popover-foreground: oklch(0.24 0.012 60);
+  --primary: oklch(0.56 0.17 33);
+  --primary-foreground: oklch(0.975 0.007 85);
+  --secondary: oklch(0.945 0.009 85);
+  --secondary-foreground: oklch(0.24 0.012 60);
+  --muted: oklch(0.945 0.009 85);
+  --muted-foreground: oklch(0.5 0.013 65);
+  --accent: oklch(0.945 0.009 85);
+  --accent-foreground: oklch(0.24 0.012 60);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.52 0.17 256 / 60%);
-  --radius: 0.625rem;
+  --border: oklch(0.885 0.012 80);
+  --input: oklch(0.885 0.012 80);
+  --ring: oklch(0.56 0.17 33 / 55%);
+  --radius: 0.25rem;
+
+  --code-background: oklch(0.955 0.009 85);
+  --grain-opacity: 0.05;
 }
 
 .dark {
-  --background: oklch(0.16 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.74 0.13 250);
-  --primary-foreground: oklch(0.18 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.96 0 0);
+  --background: oklch(0.18 0.006 60);
+  --foreground: oklch(0.91 0.012 85);
+  --card: oklch(0.21 0.006 60);
+  --card-foreground: oklch(0.91 0.012 85);
+  --popover: oklch(0.21 0.006 60);
+  --popover-foreground: oklch(0.91 0.012 85);
+  --primary: oklch(0.7 0.14 38);
+  --primary-foreground: oklch(0.18 0.006 60);
+  --secondary: oklch(0.235 0.006 60);
+  --secondary-foreground: oklch(0.91 0.012 85);
+  --muted: oklch(0.235 0.006 60);
+  --muted-foreground: oklch(0.68 0.012 80);
+  --accent: oklch(0.235 0.006 60);
+  --accent-foreground: oklch(0.91 0.012 85);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.74 0.13 250 / 60%);
+  --border: oklch(0.91 0.012 85 / 11%);
+  --input: oklch(0.91 0.012 85 / 15%);
+  --ring: oklch(0.7 0.14 38 / 55%);
+
+  --code-background: oklch(0.215 0.006 60);
+  --grain-opacity: 0.035;
 }
 
 /* The page's content column: header, main and footer all share this width. */
 @utility page-column {
-  @apply mx-auto w-full max-w-2xl px-4 sm:px-6;
+  @apply mx-auto w-full max-w-2xl px-5 sm:px-8;
+}
+
+/* Small mono labels: dates, section names, counts. */
+@utility label-mono {
+  @apply font-mono text-[0.7rem] text-muted-foreground uppercase tracking-[0.18em];
 }
 
 @layer base {
@@ -93,24 +112,229 @@
   }
   html {
     @apply font-sans;
+    text-rendering: optimizeLegibility;
   }
   body {
     @apply bg-background text-foreground antialiased;
   }
+  ::selection {
+    background-color: color-mix(in oklch, var(--primary) 22%, transparent);
+  }
+}
+
+/*
+ * Washi grain: a fixed, static noise layer. Pure decoration, so it ignores
+ * pointer events and sits under everything interactive.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.dark body::before {
+  filter: invert(1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+/*
+ * "Ink settling": content arrives faintly visible and slightly soft, then
+ * sharpens into place, like ink meeting paper. It never starts fully
+ * transparent, so the largest text still counts as painted immediately.
+ * Children stagger through `--i`, capped so long lists never feel slow.
+ */
+@keyframes ink-in {
+  from {
+    opacity: 0.2;
+    filter: blur(4px);
+    transform: translateY(6px);
+  }
+}
+@utility ink-in {
+  animation: ink-in 460ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 55ms);
+}
+
+/* Large blocks (an article body, a cover image) rise without blur: blur over a big area is costly, especially in Safari. */
+@keyframes ink-rise {
+  from {
+    opacity: 0.2;
+    transform: translateY(6px);
+  }
+}
+@utility ink-rise {
+  animation: ink-rise 460ms var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 55ms);
+}
+
+/* The seal is pressed once, on a full page load (the header persists across navigations). */
+@keyframes seal-press {
+  from {
+    opacity: 0;
+    transform: scale(1.18) rotate(-4deg);
+  }
+}
+@utility seal-press {
+  animation: seal-press 420ms var(--ease-out) 120ms both;
+}
+
+/*
+ * Route changes (React <ViewTransition>, see components/page-transition.tsx):
+ * the old page leaves quickly, the new one fades in after it. Movement inside
+ * the new page comes from `ink-in`, so the transition itself only fades.
+ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(.page) {
+  animation: 140ms var(--ease-out) both vt-fade reverse;
+}
+::view-transition-new(.page) {
+  animation: 240ms var(--ease-out) 100ms both vt-fade;
+}
+
+/* A post title travels from the list into the article heading. */
+::view-transition-group(.title-morph) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-image-pair(.title-morph) {
+  animation-name: vt-soften;
+  animation-duration: 420ms;
+}
+
+/* Theme switch: the whole page crossfades between paper and ink. */
+html[data-theme-transition]::view-transition-old(root),
+html[data-theme-transition]::view-transition-new(root) {
+  animation-duration: 380ms;
+  animation-timing-function: ease;
+}
+
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-soften {
+  40% {
+    filter: blur(3px);
+  }
+}
+
+/* Reduced motion: keep fades that aid comprehension, drop movement and blur. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes ink-in {
+    from {
+      opacity: 0.2;
+    }
+  }
+  @keyframes seal-press {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes ink-rise {
+    from {
+      opacity: 0.2;
+    }
+  }
+  ::view-transition-group(.title-morph),
+  ::view-transition-image-pair(.title-morph) {
+    animation-duration: 0s;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Long-form reading                                                   */
+/* ------------------------------------------------------------------ */
+
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-quotes: var(--muted-foreground);
+  --tw-prose-quote-borders: var(--primary);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--primary);
+  --tw-prose-hr: var(--border);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+.prose :where(h2, h3, h4) {
+  font-family: var(--font-mincho);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.prose :where(h2) {
+  margin-top: 3em;
+}
+.prose :where(a):not(.heading-anchor) {
+  font-weight: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: color-mix(in oklch, var(--primary) 45%, transparent);
+  transition: text-decoration-color 150ms ease;
+}
+.prose :where(a):not(.heading-anchor):hover {
+  text-decoration-color: var(--primary);
+}
+.prose :where(blockquote) {
+  border-left-width: 1px;
+  font-style: italic;
+  font-weight: 400;
+  quotes: none;
+}
+.prose :where(:not(pre) > code) {
+  font-size: 0.85em;
+  font-weight: 400;
+  padding: 0.15em 0.35em;
+  border-radius: var(--radius-sm);
+  background-color: var(--code-background);
+}
+.prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  border-radius: var(--radius-sm);
+}
+.prose
+  :where(figcaption):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-align: center;
+}
+/* A section break: three small vermilion points instead of a rule. */
+.prose :where(hr) {
+  border: 0;
+  margin-block: 3.5em;
+  text-align: center;
+}
+.prose :where(hr)::after {
+  content: "・・・";
+  color: var(--primary);
+  letter-spacing: 0.75em;
 }
 
 /* Shiki emits both themes as CSS variables; pick the one for the active theme. */
 .code-block pre {
   overflow-x: auto;
-  padding: 1rem;
-  background-color: var(--shiki-light-bg);
+  padding: 1.1rem 1.25rem;
+  line-height: 1.7;
+  background-color: var(--code-background);
 }
 .code-block pre,
 .code-block span {
   color: var(--shiki-light);
-}
-.dark .code-block pre {
-  background-color: var(--shiki-dark-bg);
 }
 .dark .code-block pre,
 .dark .code-block span {
@@ -120,10 +344,11 @@
 /* The "#" link after a heading in a post body: quiet until the heading is hovered. */
 .prose .heading-anchor {
   margin-left: 0.5rem;
-  color: var(--muted-foreground);
+  color: var(--primary);
   font-weight: 400;
   text-decoration: none;
   opacity: 0;
+  transition: opacity 150ms ease;
 }
 .prose .group:hover .heading-anchor,
 .prose .heading-anchor:focus-visible {

@@ -13,22 +13,24 @@ export async function SiteFooter({
   });
 
   return (
-    <footer className="page-column flex flex-wrap items-center justify-between gap-4 py-10 text-muted-foreground text-sm">
-      <p>{strings.footer.builtWith}</p>
-      {settings?.socialLinks?.length ? (
-        <ul className="flex flex-wrap gap-4">
-          {settings.socialLinks.map((link) => (
-            <li key={link.url}>
-              <a
-                href={link.url}
-                className="transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+    <footer className="page-column pt-10 pb-12">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t pt-8 text-muted-foreground text-sm">
+        <p className="label-mono">{strings.footer.builtWith}</p>
+        {settings?.socialLinks?.length ? (
+          <ul className="flex flex-wrap gap-5">
+            {settings.socialLinks.map((link) => (
+              <li key={link.url}>
+                <a
+                  href={link.url}
+                  className="transition-colors duration-150 hover:text-foreground"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
     </footer>
   );
 }

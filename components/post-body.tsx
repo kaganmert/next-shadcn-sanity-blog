@@ -61,7 +61,7 @@ export function PostBody({ value }: { value: BlockContent }) {
           <SanityImage
             image={image}
             sizes={ARTICLE_IMAGE_SIZES}
-            className="rounded-lg"
+            className="rounded-sm"
           />
           {image.caption ? <figcaption>{image.caption}</figcaption> : null}
         </figure>

@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/back-link";
+import {
+  PageTransition,
+  PostTitleTransition,
+} from "@/components/page-transition";
 import { PostBody } from "@/components/post-body";
 import { ARTICLE_IMAGE_SIZES, SanityImage } from "@/components/sanity-image";
 import { formatDate } from "@/lib/format-date";
 import { routes } from "@/lib/routes";
 import { getSiteIdentity } from "@/lib/site-identity";
+import { stagger } from "@/lib/stagger";
 import { withPlaceholderParam } from "@/lib/static-params";
 import { strings } from "@/lib/strings";
 import { WithFetchOptions } from "@/sanity/lib/fetch-options";
@@ -65,9 +71,11 @@ export async function generateMetadata({
 export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
   const { slug } = await params;
   return (
-    <WithFetchOptions>
-      {(fetchOptions) => <Post slug={slug} fetchOptions={fetchOptions} />}
-    </WithFetchOptions>
+    <PageTransition>
+      <WithFetchOptions>
+        {(fetchOptions) => <Post slug={slug} fetchOptions={fetchOptions} />}
+      </WithFetchOptions>
+    </PageTransition>
   );
 }
 
@@ -86,28 +94,33 @@ async function Post({
   if (!post) notFound();
 
   return (
-    <article className="py-12">
-      <header className="space-y-4">
-        <time
-          dateTime={post.publishedAt}
-          className="text-muted-foreground text-sm"
-        >
+    <article className="pt-16 sm:pt-24">
+      <header>
+        <time dateTime={post.publishedAt} className="ink-in block label-mono">
           {formatDate(post.publishedAt)}
         </time>
-        <h1 className="font-semibold text-3xl tracking-tight sm:text-4xl">
-          {post.title}
-        </h1>
-        <p className="text-lg text-muted-foreground leading-8">
+        <PostTitleTransition slug={post.slug}>
+          <h1 className="mt-6 text-balance font-display font-semibold text-4xl leading-[1.3] tracking-[0.01em] sm:text-[2.75rem]">
+            {post.title}
+          </h1>
+        </PostTitleTransition>
+        <p
+          className="ink-in mt-6 text-pretty font-serif text-muted-foreground text-xl leading-relaxed"
+          style={stagger(1)}
+        >
           {post.excerpt}
         </p>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <div
+          className="ink-in mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-6"
+          style={stagger(2)}
+        >
           {post.author ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 text-sm">
               {post.author.image?.asset ? (
                 <SanityImage
                   image={post.author.image}
                   sizes="32px"
-                  className="size-8 rounded-full object-cover"
+                  className="size-8 rounded-full object-cover grayscale"
                 />
               ) : null}
               <span>
@@ -121,13 +134,13 @@ async function Post({
           {post.categories?.length ? (
             <ul
               aria-label={strings.blog.categories}
-              className="flex flex-wrap gap-2"
+              className="flex flex-wrap gap-x-4 gap-y-1"
             >
               {post.categories.map((category) => (
                 <li key={category.slug}>
                   <Link
                     href={routes.category(category.slug)}
-                    className="text-primary hover:underline"
+                    className="label-mono transition-colors duration-150 hover:text-primary"
                   >
                     {category.title}
                   </Link>
@@ -143,22 +156,21 @@ async function Post({
           image={post.coverImage}
           priority
           sizes={ARTICLE_IMAGE_SIZES}
-          className="mt-8 w-full rounded-lg"
+          className="ink-rise mt-12 w-full rounded-sm"
+          style={stagger(3)}
         />
       ) : null}
 
       {post.body?.length ? (
-        <div className="prose prose-neutral dark:prose-invert mt-10 max-w-none prose-a:text-primary prose-headings:tracking-tight prose-code:before:content-none prose-code:after:content-none">
+        <div
+          className="ink-rise prose dark:prose-invert mt-14 max-w-none prose-code:before:content-none prose-code:after:content-none"
+          style={stagger(3)}
+        >
           <PostBody value={post.body} />
         </div>
       ) : null}
 
-      <Link
-        href={routes.blog}
-        className="mt-12 inline-block text-primary text-sm hover:underline"
-      >
-        ← {strings.allPosts}
-      </Link>
+      <BackLink />
     </article>
   );
 }
