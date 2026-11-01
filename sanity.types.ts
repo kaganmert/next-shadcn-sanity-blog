@@ -110,9 +110,9 @@ export type Experience = {
       _key: string;
     }>;
     style?: "normal";
-    listItem?: "bullet" | "number";
+    listItem?: "bullet";
     markDefs?: Array<{
-      href?: string;
+      href: string;
       _type: "link";
       _key: string;
     }>;
@@ -495,9 +495,9 @@ export type WorkPageQueryResult = {
         _key: string;
       }>;
       style?: "normal";
-      listItem?: "bullet" | "number";
+      listItem?: "bullet";
       markDefs?: Array<{
-        href?: string;
+        href: string;
         _type: "link";
         _key: string;
       }>;
