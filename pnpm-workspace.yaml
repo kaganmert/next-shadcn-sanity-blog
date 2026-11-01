@@ -1,3 +1,18 @@
 allowBuilds:
   sharp: false
   unrs-resolver: false
+
+# Security fixes for transitive dependencies the direct dependencies don't
+# update yet (NSB-15). Each override is scoped to the vulnerable range, so
+# unaffected copies keep their own versions. Drop an entry once its parent
+# ships the fix.
+overrides:
+  # @sanity/workbench-cli → @module-federation/vite
+  undici@>=7.0.0 <7.30.1: ^7.30.1
+  # @sanity/cli → @vercel/frameworks
+  js-yaml@>=3.0.0 <3.15.2: ^3.15.2
+  smol-toml@<1.9.0: ^1.9.1
+  # @oclif/core (Sanity CLI)
+  minimatch@<11.0.1: ^11.0.1
+  # @tailwindcss/typography
+  postcss-selector-parser@<6.1.5: ^6.1.5
