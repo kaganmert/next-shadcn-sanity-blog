@@ -77,5 +77,9 @@ export const strings = {
   },
   footer: {
     builtWith: "Built with Next.js and Sanity.",
+    /** Where "Built with" points: the template this site started from. Set to null to show plain text. */
+    builtWithHref: "https://github.com/kaganmert/next-shadcn-sanity-blog" as
+      | string
+      | null,
   },
 } as const;

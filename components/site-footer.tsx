@@ -15,7 +15,18 @@ export async function SiteFooter({
   return (
     <footer className="page-column pt-10 pb-12">
       <div className="flex flex-wrap items-center justify-between gap-4 border-t pt-8 text-muted-foreground text-sm">
-        <p className="label-mono">{strings.footer.builtWith}</p>
+        <p className="label-mono">
+          {strings.footer.builtWithHref ? (
+            <a
+              href={strings.footer.builtWithHref}
+              className="transition-colors duration-150 hover:text-foreground"
+            >
+              {strings.footer.builtWith}
+            </a>
+          ) : (
+            strings.footer.builtWith
+          )}
+        </p>
         {settings?.socialLinks?.length ? (
           <ul className="flex flex-wrap gap-5">
             {settings.socialLinks.map((link) => (
