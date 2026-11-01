@@ -59,34 +59,51 @@
 
 Requirements: Node.js (the version in `.nvmrc`) and pnpm (`corepack enable`).
 
-1. Install dependencies:
+```sh
+pnpm install
+pnpm bootstrap
+pnpm dev
+```
 
-   ```sh
-   pnpm install
-   ```
+`pnpm bootstrap` sets everything up in one go:
 
-2. Create a Sanity project and dataset. If you don't have one yet:
+- Logs you in to Sanity.
+- Creates a project with a public `production` dataset, or uses an existing project ID.
+- Creates a viewer token.
+- Allows `http://localhost:3000` in CORS.
+- Fills in `.env.local`.
+- Offers to import the sample content.
+
+It is safe to re-run: it reuses what is already set up, and never overwrites a value in `.env.local` without asking. Add `--yes` to accept every default.
+
+The site then runs on <http://localhost:3000>, and the Studio on <http://localhost:3000/studio>.
+
+### Manual setup
+
+If you'd rather run each step yourself:
+
+1. Create a Sanity project and dataset:
 
    ```sh
    pnpm exec sanity login
    pnpm exec sanity projects create "my-blog" --dataset production --dataset-visibility public
    ```
 
-3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET`.
+2. Copy `.env.example` to `.env.local`, and fill in `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET`.
 
-4. Create a viewer token for draft mode and Visual Editing, then put it in `SANITY_API_READ_TOKEN`:
+3. Create a viewer token for draft mode and Visual Editing, and put it in `SANITY_API_READ_TOKEN`:
 
    ```sh
    pnpm exec sanity tokens add "next-app-viewer" --role viewer
    ```
 
-5. Let the local Studio sign in:
+4. Let the local Studio sign in:
 
    ```sh
    pnpm exec sanity cors add http://localhost:3000 --credentials
    ```
 
-6. Optionally, import the sample content (Settings, an author, categories, posts and experiences). See [`sanity/seed/README.md`](./sanity/seed/README.md).
+5. Optionally, import the sample content: Settings, an author, categories, posts, experiences, a project, a credential and a page. See [`sanity/seed/README.md`](./sanity/seed/README.md).
 
    ```sh
    pnpm seed
@@ -94,16 +111,11 @@ Requirements: Node.js (the version in `.nvmrc`) and pnpm (`corepack enable`).
 
    `pnpm seed` imports into the `production` dataset with `--replace`, so it overwrites documents that have the same IDs.
 
-7. Start the dev server. The site runs on <http://localhost:3000> and the Studio on <http://localhost:3000/studio>.
-
-   ```sh
-   pnpm dev
-   ```
-
 ## Scripts
 
 | Command          | What it does                                               |
 | ---------------- | ---------------------------------------------------------- |
+| `pnpm bootstrap` | Set up Sanity and `.env.local` (see **Local setup**)       |
 | `pnpm dev`       | Start the dev server                                       |
 | `pnpm build`     | Production build                                           |
 | `pnpm start`     | Serve the production build                                 |
