@@ -1,7 +1,9 @@
+import { formatMonthDayOrdinal } from "@/lib/format-date";
 import type {
   ContributionCalendar,
   ContributionDay,
 } from "@/lib/github-contributions";
+import { strings } from "@/lib/strings";
 
 export type ContributionCell = ContributionDay & {
   /** Week index, oldest first. */
@@ -9,6 +11,8 @@ export type ContributionCell = ContributionDay & {
   /** Weekday, Sunday first. */
   row: number;
   isToday: boolean;
+  /** "1 contribution on February 12th." */
+  label: string;
 };
 
 export type ContributionGrid = {
@@ -35,6 +39,7 @@ export function buildContributionGrid(
         column,
         row: day.weekday,
         isToday: day.date === lastDate,
+        label: strings.github.day(day.count, formatMonthDayOrdinal(day.date)),
       })),
     ),
   };

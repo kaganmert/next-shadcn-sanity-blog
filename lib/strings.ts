@@ -48,10 +48,11 @@ export const strings = {
     /** "1,234 contributions in the last year". */
     summary: (total: number) =>
       `${new Intl.NumberFormat("en-US").format(total)} ${total === 1 ? "contribution" : "contributions"} in the last year`,
-    /** One cell's tooltip: "3 contributions on Oct 20, 2026". */
-    day: (count: number, date: string) =>
-      `${count === 0 ? "No" : count} ${count === 1 ? "contribution" : "contributions"} on ${date}`,
+    /** One day's label, like GitHub's: "1 contribution on February 12th." */
+    day: (count: number, monthDay: string) =>
+      `${count === 0 ? "No" : count} ${count === 1 ? "contribution" : "contributions"} on ${monthDay}.`,
     profile: "GitHub",
+    keyboardHint: "Use the arrow keys to read each day",
   },
   category: {
     eyebrow: "Category",

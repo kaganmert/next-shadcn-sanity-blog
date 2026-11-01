@@ -54,4 +54,20 @@ describe("buildContributionGrid", () => {
       cells: [],
     });
   });
+
+  it("labels each day like GitHub's calendar tooltip", () => {
+    const grid = buildContributionGrid(calendar);
+    expect(grid.cells.map((cell) => cell.label)).toEqual([
+      "No contributions on October 23rd.",
+      "2 contributions on October 24th.",
+      "10 contributions on October 25th.",
+      "No contributions on October 26th.",
+    ]);
+    expect(
+      buildContributionGrid({
+        total: 1,
+        weeks: [[{ date: "2026-02-12", weekday: 4, count: 1, level: 1 }]],
+      }).cells[0].label,
+    ).toBe("1 contribution on February 12th.");
+  });
 });
