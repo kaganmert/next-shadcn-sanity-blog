@@ -1,57 +1,21 @@
+import { UserIcon } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { imageWithAlt } from "./fields";
 
-export default defineType({
+export const author = defineType({
   name: "author",
   title: "Author",
   type: "document",
+  icon: UserIcon,
   fields: [
     defineField({
       name: "name",
       title: "Name",
       type: "string",
+      validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      options: {
-        source: "name",
-        maxLength: 96,
-      },
-    }),
-    defineField({
-      name: "image",
-      title: "Image",
-      type: "image",
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: "alt",
-          type: "string",
-          title: "Alternative Text",
-        },
-      ],
-    }),
-    defineField({
-      name: "bio",
-      title: "Bio",
-      type: "array",
-      of: [
-        {
-          title: "Block",
-          type: "block",
-          styles: [{ title: "Normal", value: "normal" }],
-          lists: [],
-        },
-      ],
-    }),
+    imageWithAlt({ name: "image", title: "Image" }),
+    defineField({ name: "bio", title: "Bio", type: "text", rows: 3 }),
   ],
-  preview: {
-    select: {
-      title: "name",
-      media: "image",
-    },
-  },
+  preview: { select: { title: "name", media: "image" } },
 });
