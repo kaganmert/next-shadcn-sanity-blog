@@ -2,7 +2,7 @@
 
 A personal blog and portfolio built with **Next.js 16**, **Sanity**, **Tailwind CSS v4** and **shadcn/ui**. It is minimal and typography-led, and it is easy to fork as a template: the site's name, navigation, links and tech stack all live in Sanity, not in code.
 
-**Live:** [next-shadcn-sanity-blog.vercel.app](https://next-shadcn-sanity-blog.vercel.app). It is the author's own site, running this repo unchanged with real content.
+**Live:** [kaganmert.com](https://kaganmert.com). It is the author's own site, running this repo unchanged with real content.
 
 ## Stack
 
