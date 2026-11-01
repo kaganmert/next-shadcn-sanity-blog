@@ -150,7 +150,7 @@ async function main() {
 
   // 1. Sanity login.
   step("Checking your Sanity login");
-  if (!sanity(["projects", "list", "--json"]).ok) {
+  if (!sanity(["projects", "list"]).ok) {
     console.log("  Not logged in. Opening the Sanity login…");
     if (!sanity(["login"], { inherit: true }).ok) fail("Sanity login failed.");
   }
