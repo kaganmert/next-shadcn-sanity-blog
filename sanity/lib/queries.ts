@@ -7,7 +7,8 @@ export const settingsQuery =
   description,
   intro,
   navigation[]{ label, href },
-  socialLinks[]{ label, url }
+  socialLinks[]{ label, url },
+  githubUsername
 }`);
 
 /** A post that can be linked to: it has a slug. */

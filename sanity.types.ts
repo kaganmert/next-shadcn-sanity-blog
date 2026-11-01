@@ -84,6 +84,7 @@ export type Settings = {
     _type: "socialLink";
     _key: string;
   }>;
+  githubUsername?: string;
   resume?: {
     asset?: SanityFileAssetReference;
     media?: unknown;
@@ -443,7 +444,7 @@ export type AllSanitySchemaTypes =
 
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings" && _id == "settings"][0]{  title,  description,  intro,  navigation[]{ label, href },  socialLinks[]{ label, url }}
+// Query: *[_type == "settings" && _id == "settings"][0]{  title,  description,  intro,  navigation[]{ label, href },  socialLinks[]{ label, url },  githubUsername}
 export type SettingsQueryResult = {
   title: string;
   description: string;
@@ -456,6 +457,7 @@ export type SettingsQueryResult = {
     label: string;
     url: string;
   }> | null;
+  githubUsername: string | null;
 } | null;
 
 // Source: sanity/lib/queries.ts
@@ -796,7 +798,7 @@ export type IndexablePagesQueryResult = Array<{
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_type == "settings" && _id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url }\n}': SettingsQueryResult;
+    '*[_type == "settings" && _id == "settings"][0]{\n  title,\n  description,\n  intro,\n  navigation[]{ label, href },\n  socialLinks[]{ label, url },\n  githubUsername\n}': SettingsQueryResult;
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': PostsQueryResult;
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [0...$limit] {\n  \n  _id,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  "categories": categories[]->{ title, "slug": slug.current }\n\n}': LatestPostsQueryResult;
     '*[_type == "category" && defined(slug.current)] | order(title asc) {\n  title,\n  "slug": slug.current,\n  "postCount": count(*[_type == "post" && defined(slug.current) && references(^._id)])\n}': CategoriesQueryResult;

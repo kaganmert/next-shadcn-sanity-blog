@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatDateRange } from "./format-date";
+import {
+  formatDate,
+  formatDateRange,
+  formatMonthDayOrdinal,
+} from "./format-date";
 
 describe("formatDate", () => {
   it("formats an ISO date as a short English date", () => {
@@ -55,5 +59,40 @@ describe("formatDateRange", () => {
         isCurrent: false,
       }),
     ).toBe("Oct 2021");
+  });
+});
+
+describe("formatMonthDayOrdinal", () => {
+  it("writes the full month and an ordinal day, like GitHub's calendar", () => {
+    expect(formatMonthDayOrdinal("2026-02-12")).toBe("February 12th");
+  });
+
+  it("uses st, nd and rd except in the teens", () => {
+    const days = [
+      "01",
+      "02",
+      "03",
+      "04",
+      "11",
+      "12",
+      "13",
+      "21",
+      "22",
+      "23",
+      "31",
+    ];
+    expect(days.map((day) => formatMonthDayOrdinal(`2026-01-${day}`))).toEqual([
+      "January 1st",
+      "January 2nd",
+      "January 3rd",
+      "January 4th",
+      "January 11th",
+      "January 12th",
+      "January 13th",
+      "January 21st",
+      "January 22nd",
+      "January 23rd",
+      "January 31st",
+    ]);
   });
 });

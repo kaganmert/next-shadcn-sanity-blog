@@ -41,7 +41,22 @@ describe("settingsQuery", () => {
         },
         { label: "Email", url: "mailto:hello@example.com" },
       ],
+      githubUsername: null,
     });
+  });
+
+  it("returns the GitHub username when one is set", async () => {
+    const settings = await runQuery<{ githubUsername: string }>(settingsQuery, {
+      documents: [
+        {
+          _id: "settings",
+          _type: "settings",
+          title: "Site",
+          githubUsername: "octocat",
+        },
+      ],
+    });
+    expect(settings.githubUsername).toBe("octocat");
   });
 
   it("returns null when no settings document exists", async () => {

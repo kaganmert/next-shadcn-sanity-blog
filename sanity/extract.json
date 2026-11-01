@@ -458,6 +458,13 @@
         },
         "optional": true
       },
+      "githubUsername": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "resume": {
         "type": "objectAttribute",
         "value": {
