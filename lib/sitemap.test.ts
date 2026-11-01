@@ -2,12 +2,13 @@ import { describe, expect, it } from "vitest";
 import { buildSitemap } from "./sitemap";
 
 describe("buildSitemap", () => {
-  it("lists the static pages, every post, category and project page with absolute URLs", () => {
+  it("lists the static pages, every post, category, project and standalone page with absolute URLs", () => {
     const entries = buildSitemap({
       siteUrl: "https://example.com",
       posts: [{ slug: "hello-world", updatedAt: "2026-10-21T00:00:00Z" }],
       categories: [{ slug: "nextjs", updatedAt: "2026-10-01T00:00:00Z" }],
       projects: [{ slug: "guessy", updatedAt: "2026-08-30T00:00:00Z" }],
+      pages: [{ slug: "privacy", updatedAt: "2026-09-06T00:00:00Z" }],
     });
 
     expect(entries).toEqual([
@@ -26,6 +27,10 @@ describe("buildSitemap", () => {
         url: "https://example.com/work/guessy",
         lastModified: "2026-08-30T00:00:00Z",
       },
+      {
+        url: "https://example.com/privacy",
+        lastModified: "2026-09-06T00:00:00Z",
+      },
     ]);
   });
 
@@ -38,6 +43,7 @@ describe("buildSitemap", () => {
       ],
       categories: [],
       projects: [],
+      pages: [],
     });
     expect(
       entries.find((entry) => entry.url === "https://example.com/blog")
@@ -51,6 +57,7 @@ describe("buildSitemap", () => {
       posts: [],
       categories: [],
       projects: [],
+      pages: [],
     });
     expect(entries).toEqual([
       { url: "https://example.com/" },
